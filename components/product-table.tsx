@@ -10,8 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { Button } from "./ui/button";
-import { EditProductModal } from "./edit-product-modal";
+import { EditProductModal } from "./crud/product/edit-product-modal";
+import { DeleteProductButton } from "./crud/product/delete-product-button";
 
 export const ProductTable = async () => {
   const products = await getProducts();
@@ -56,10 +56,10 @@ export const NewProductTable = async () => {
           <TableHead className="w-[50px] font-bold text-foreground">
             No.
           </TableHead>
-          <TableHead className="w-[50px] font-bold text-center text-foreground">
+          <TableHead className="w-[100px] font-bold text-center text-foreground">
             Product ID
           </TableHead>
-          <TableHead className="w-[200px] pl-6 font-bold text-foreground">
+          <TableHead className="w-[200px] font-bold text-center text-foreground">
             Name
           </TableHead>
           <TableHead className="w-[250px] font-bold text-foreground">
@@ -82,10 +82,12 @@ export const NewProductTable = async () => {
             <TableCell className="text-foreground">
               {products.indexOf(product) + 1}
             </TableCell>
-            <TableCell className="max-w-xs font-bold text-foreground overflow-hidden break-words">
-              {product.id}
+            <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify">
+              <span className="block max-w-[100px] break-words overflow-hidden">
+                {product.id}
+              </span>
             </TableCell>
-            <TableCell className="font-medium pl-6 text-foreground">
+            <TableCell className="font-medium text-center text-foreground">
               {product.name}
             </TableCell>
             <TableCell className="text-justify">
@@ -95,26 +97,21 @@ export const NewProductTable = async () => {
               <Image
                 src="/logo-satelitnet-transparent.png"
                 alt={product.name}
-                width={2000}
-                height={2000}
+                width={800}
+                height={600}
               />
             </TableCell>
             <TableCell className="text-center text-foreground">
               {product.version}
             </TableCell>
             <TableCell>
-              <div className="flex items-center justify-between ">
+              <div className="flex items-center justify-between gap-3">
                 <EditProductModal
                   product={product}
-                  className="px-4 py-2 text-sm max-w-md w-full bg-orange-500"
+                  className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
                 />
 
-                <Button
-                  variant={"destructive"}
-                  className="px-4 py-2 ml-2 text-sm max-w-md w-full "
-                >
-                  Delete
-                </Button>
+                <DeleteProductButton productId={product.id} />
               </div>
             </TableCell>
           </TableRow>

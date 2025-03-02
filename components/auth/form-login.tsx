@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useActionState } from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import { signInCredentials } from "@/lib/actions";
 import { NewLoginButton } from "@/components/button";
 
@@ -60,14 +60,14 @@ const FormLogin = () => {
       </div>
 
       <NewLoginButton />
-      <div className="w-full flex items-center justify-center">
+      {/* <div className="w-full flex items-center justify-center">
         <p className="text-sm font-light text-accent-foreground dark:text-accent">
           Don&apos;t have an account?{" "}
           <Link href="/register">
             <span className="font-medium pl-1 text-primary">Sign up here</span>
           </Link>
         </p>
-      </div>
+      </div> */}
     </form>
   );
 };

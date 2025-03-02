@@ -5,15 +5,18 @@ export const metadata: Metadata = {
   title: "Users",
 };
 
-const UsersPage = () => {
+const ProductsPage = () => {
   return (
-    <div className="bg-slate-50 min-h-screen">
-      <div className="max-w-screen-md mx-auto py-10">
-        <h1 className="text-2xl font-bold text-black">User List</h1>
+    <div className="min-h-screen ">
+      <div className="max-w-screen-lg mx-auto py-10">
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-foreground pb-5">User List</h1>
+          {/* <CreateProductModal className="mr-6" /> */}
+        </div>
         <UserTable />
       </div>
     </div>
   );
 };
 
-export default UsersPage;
+export default ProductsPage;

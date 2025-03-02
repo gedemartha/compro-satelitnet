@@ -123,15 +123,19 @@ export const updateProduct = async (prevState: unknown, formData: FormData) => {
   }
 };
 
-export const deleteProduct = async (prevState: unknown, formData: FormData) => {
-  "use server";
+export async function deleteProduct(
+  prevState: unknown,
+  formData: FormData // Data yang dikirimkan dari form
+) {
   const id = formData.get("id") as string;
+  if (!id) return { error: "Product ID is required" };
 
-  if (!id) {
-    return { error: "Product ID is required" };
+  try {
+    await prisma.product.delete({ where: { id } });
+    revalidatePath("/dashboard/products");
+    return { success: true }; // Mengembalikan objek sukses
+    // eslint-disable-next-line
+  } catch (error) {
+    return { error: "Failed to delete product" }; // Mengembalikan error jika gagal
   }
-
-  await prisma.product.delete({ where: { id } });
-
-  return { success: true };
-};
+}
