@@ -28,3 +28,12 @@ export const ProductSchema = object({
   version: string().min(1, "Version is required"),
   image: string().min(1, "Image path is required"),
 });
+
+export const UserSchema = object({
+  name: string().min(1, "Name must be more than 1 character"),
+  username: string().min(1, "Username must be more than 1 character"),
+  email: string().email("Invalid Email"),
+  password: string()
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be less than 32 characters"),
+});

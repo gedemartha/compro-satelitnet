@@ -10,27 +10,25 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { updateProduct } from "@/lib/actions"; // Fungsi untuk update produk
+import { updateUser } from "@/lib/actions"; // Fungsi untuk update produk
 import { cn } from "@/lib/utils"; // Untuk className
 
-interface EditProductModalProps {
-  product: {
+interface EditUserModalProps {
+  user: {
     id: string;
-    name: string;
-    description: string;
-    version: string;
+    name?: string | null;
+    email?: string | null;
+    username?: string | null;
+    role: string;
+    password: string;
   };
   className?: string;
 }
 
-export const EditProductModal = ({
-  product,
-  className,
-}: EditProductModalProps) => {
+export const EditUserModal = ({ user, className }: EditUserModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(updateProduct, {
+  const [state, formAction] = useActionState(updateUser, {
     success: false,
     error: undefined,
   });
@@ -60,43 +58,59 @@ export const EditProductModal = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit user</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
           action={formAction}
           className="mt-4 flex flex-col gap-4"
         >
-          <input type="hidden" name="id" value={product.id} />
+          <input type="hidden" name="id" value={user.id} />
           <div>
             <label htmlFor="name" className="text-sm">
-              Product Name
+              Name
             </label>
-            <Input name="name" defaultValue={product.name} required />
+            <Input name="name" defaultValue={user.name ?? ""} required />
           </div>
           <div>
-            <label htmlFor="description" className="text-sm">
-              Description
+            <label htmlFor="email" className="text-sm">
+              Email
             </label>
-            <Textarea
-              name="description"
+            <Input
+              name="email"
               placeholder="e.g. Sistem Laundry untuk kebutuhan manajemen Laundry"
-              defaultValue={product.description}
+              defaultValue={user.email ?? ""}
               required
-              className="h-40"
+              type="email"
             />
           </div>
           <div>
-            <label htmlFor="version" className="text-sm">
-              Version
+            <label htmlFor="username" className="text-sm">
+              Username
             </label>
-            <Input name="version" defaultValue={product.version} required />
+            <Input
+              name="username"
+              defaultValue={user.username ?? ""}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="role" className="text-sm">
+              Role
+            </label>
+            <Input name="role" defaultValue={user.role} required />
+          </div>
+          <div>
+            <label htmlFor="password" className="text-sm">
+              Password
+            </label>
+            <Input name="password" required />
           </div>
 
           <Button type="submit">Update</Button>
         </form>
         {state.success && (
-          <p className="text-green-500">Product updated successfully!</p>
+          <p className="text-green-500">User updated successfully!</p>
         )}
       </DialogContent>
     </Dialog>

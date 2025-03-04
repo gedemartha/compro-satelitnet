@@ -1,5 +1,10 @@
 "use server";
-import { ProductSchema, RegisterSchema, SignInSchema } from "@/lib/zod";
+import {
+  ProductSchema,
+  RegisterSchema,
+  SignInSchema,
+  UserSchema,
+} from "@/lib/zod";
 import { hashSync } from "bcrypt-ts";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -72,7 +77,7 @@ export const signInCredentials = async (
   }
 };
 
-// Create Product Validation
+//  Product Actions
 
 export const createProduct = async (prevState: unknown, formData: FormData) => {
   const validatedFields = ProductSchema.safeParse(
@@ -139,3 +144,80 @@ export async function deleteProduct(
     return { error: "Failed to delete product" }; // Mengembalikan error jika gagal
   }
 }
+
+// User Actions
+
+export const createUser = async (prevState: unknown, formData: FormData) => {
+  const validatedFields = UserSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+  const { name, email, username, password } = validatedFields.data;
+  const hashedPassword = hashSync(password, 10);
+
+  try {
+    await prisma.user.create({
+      data: {
+        name,
+        username,
+        email,
+        role: "user",
+        password: hashedPassword,
+      },
+    });
+
+    revalidatePath("/dashboard/users"); // Refresh tabel user tanpa reload halaman
+    return { success: true };
+  } catch (error) {
+    return { message: `Failed to register user ${error}` };
+  }
+};
+
+export async function deleteUser(
+  prevState: unknown,
+  formData: FormData // Data yang dikirimkan dari form
+) {
+  const id = formData.get("id") as string;
+  if (!id) return { error: "User ID is required" };
+
+  try {
+    await prisma.user.delete({ where: { id } });
+    revalidatePath("/dashboard/users");
+    return { success: true }; // Mengembalikan objek sukses
+    // eslint-disable-next-line
+  } catch (error) {
+    return { error: "Failed to delete user" }; // Mengembalikan error jika gagal
+  }
+}
+
+export const updateUser = async (prevState: unknown, formData: FormData) => {
+  const id = formData.get("id") as string;
+  const name = formData.get("name") as string;
+  const username = formData.get("username") as string;
+  const role = formData.get("role") as string;
+  const password = formData.get("password") as string;
+
+  if (!id || !name || !username || !role || !password) {
+    return { error: "All fields are required" };
+  }
+
+  const hashedPassword = hashSync(password, 10);
+
+  try {
+    await prisma.user.update({
+      where: { id },
+      data: { name, username, role, password: hashedPassword },
+    });
+
+    revalidatePath("/dashboard/users"); // Refresh tabel produk tanpa reload halaman
+    return { success: true };
+  } catch (error) {
+    console.error("Update user failed:", error);
+    return { error: "Failed to update user" };
+  }
+};

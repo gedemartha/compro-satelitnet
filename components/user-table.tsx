@@ -10,6 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import { DeleteUserButton } from "./crud/user/delete-user-button";
+import { EditUserModal } from "./crud/user/edit-user-modal";
 // import { EditProductModal } from "./crud/product/edit-product-modal";
 // import { DeleteProductButton } from "./crud/product/delete-product-button";
 
@@ -75,14 +77,14 @@ export const UserTable = async () => {
               {user.role}
             </TableCell>
             <TableCell>
-              {/* <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center justify-between gap-3">
                 <EditUserModal
                   user={user}
                   className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
                 />
 
-                <DeleteUserButton userId={user.id} /> */}
-              {/* </div> */}
+                <DeleteUserButton userId={user.id} />
+              </div>
             </TableCell>
           </TableRow>
         ))}
