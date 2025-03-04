@@ -12,13 +12,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-// Definisi tipe untuk state
 type DeleteState = {
   success?: boolean;
   error?: string;
 };
 
-export function DeleteUserButton({ userId }: { userId: string }) {
+export function DeleteUserButton({
+  userId,
+  currentUserId, // Tambahkan ID user yang sedang login
+}: {
+  userId: string;
+  currentUserId?: string;
+}) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const [state, formAction] = useActionState<DeleteState, FormData>(
@@ -30,7 +35,6 @@ export function DeleteUserButton({ userId }: { userId: string }) {
 
   return (
     <>
-      {/* Tombol untuk membuka modal */}
       <Button
         variant="destructive"
         className="w-full text-sm"
@@ -39,7 +43,6 @@ export function DeleteUserButton({ userId }: { userId: string }) {
         Delete
       </Button>
 
-      {/* Modal Konfirmasi */}
       <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -52,31 +55,40 @@ export function DeleteUserButton({ userId }: { userId: string }) {
               Cancel
             </Button>
 
-            {/* Form harus ada di dalam modal agar tetap terhubung */}
             <form
               action={formAction}
-              onSubmit={() => setModalOpen(false)} // Modal ditutup setelah submit
+              onSubmit={(e) => {
+                if (userId === currentUserId) {
+                  e.preventDefault(); // Cegah pengiriman form
+                }
+                setModalOpen(false);
+              }}
             >
               <input type="hidden" name="id" value={userId} />
-              <Button variant="destructive" type="submit">
-                Yes, Delete
+              <Button
+                variant="destructive"
+                type="submit"
+                disabled={userId === currentUserId}
+              >
+                {userId === currentUserId
+                  ? "You can't delete yourself"
+                  : "Delete"}
               </Button>
             </form>
           </DialogFooter>
+
+          {/* Tampilkan error jika ada */}
+          {state?.error && (
+            <p className="text-red-500 text-xs mt-1">{state.error}</p>
+          )}
+
+          {state?.success && (
+            <p className="text-green-500 text-xs mt-1">
+              User deleted successfully!
+            </p>
+          )}
         </DialogContent>
       </Dialog>
-
-      {/* Tampilkan pesan error jika ada */}
-      {state?.error && (
-        <p className="text-red-500 text-xs mt-1">{state.error}</p>
-      )}
-
-      {/* Tampilkan pesan sukses jika berhasil */}
-      {state?.success && (
-        <p className="text-green-500 text-xs mt-1">
-          Product deleted successfully!
-        </p>
-      )}
     </>
   );
 }

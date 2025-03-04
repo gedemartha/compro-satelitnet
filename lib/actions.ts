@@ -183,6 +183,7 @@ export async function deleteUser(
   formData: FormData // Data yang dikirimkan dari form
 ) {
   const id = formData.get("id") as string;
+
   if (!id) return { error: "User ID is required" };
 
   try {
@@ -196,6 +197,15 @@ export async function deleteUser(
 }
 
 export const updateUser = async (prevState: unknown, formData: FormData) => {
+  const validatedFields = UserSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const username = formData.get("username") as string;

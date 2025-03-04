@@ -15,7 +15,7 @@ import { createUser } from "@/lib/actions";
 import { cn } from "@/lib/utils"; // Import fungsi cn dari utils.ts
 
 interface CreateUserProps {
-  className?: string; // Menambahkan props className
+  className?: string;
 }
 
 export const CreateUserModal = ({ className }: CreateUserProps) => {
@@ -24,14 +24,23 @@ export const CreateUserModal = ({ className }: CreateUserProps) => {
     success: false,
     error: undefined,
   });
-  const formRef = useRef<HTMLFormElement>(null); // Untuk mereset form
 
-  // Tutup modal & reset form ketika produk berhasil dibuat
+  // State untuk menyimpan input pengguna
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    username: "",
+    password: "",
+  });
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Tutup modal & reset form ketika sukses
   useEffect(() => {
     if (state.success) {
       setTimeout(() => {
-        setIsOpen(false); // Tutup modal setelah 1.5 detik
-        formRef.current?.reset(); // Reset form input
+        setIsOpen(false);
+        setFormData({ name: "", email: "", username: "", password: "" }); // Reset input hanya saat sukses
       }, 2000);
     }
   }, [state.success]);
@@ -39,9 +48,17 @@ export const CreateUserModal = ({ className }: CreateUserProps) => {
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      state.success = false; // Reset pesan sukses
-      state.error = {}; // Reset pesan error
+      state.success = false;
+      state.error = {};
     }
+  };
+
+  // Handler untuk update state ketika user mengetik
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -62,11 +79,18 @@ export const CreateUserModal = ({ className }: CreateUserProps) => {
             <label htmlFor="name" className="text-sm">
               Name
             </label>
-            <Input name="name" placeholder="e.g. John Doe" required />
+            <Input
+              name="name"
+              placeholder="e.g. John Doe"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
             {state.error?.name && (
               <p className="text-red-500 text-sm">{state.error.name}</p>
             )}
           </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="email" className="text-sm">
               Email
@@ -75,22 +99,31 @@ export const CreateUserModal = ({ className }: CreateUserProps) => {
               name="email"
               placeholder="e.g. johndoe@gmail.com"
               type="email"
+              value={formData.email}
+              onChange={handleChange}
               required
             />
             {state.error?.email && (
               <p className="text-red-500 text-sm">{state.error.email}</p>
             )}
           </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="username" className="text-sm">
               Username
             </label>
-
-            <Input name="username" placeholder="e.g John" required />
+            <Input
+              name="username"
+              placeholder="e.g John"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
             {state.error?.username && (
               <p className="text-red-500 text-sm">{state.error.username}</p>
             )}
           </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="password" className="text-sm">
               Password
@@ -98,9 +131,10 @@ export const CreateUserModal = ({ className }: CreateUserProps) => {
             <Input
               name="password"
               placeholder="(minimum 8 characters)"
-              required
-              className=""
               type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
             {state.error?.password && (
               <p className="text-red-500 text-sm">{state.error.password}</p>

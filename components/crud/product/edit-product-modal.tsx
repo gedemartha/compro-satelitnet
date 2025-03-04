@@ -48,8 +48,8 @@ export const EditProductModal = ({
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      state.success = false; // Reset pesan sukses
-      state.error = ""; // Reset pesan error
+      state.success = false;
+      state.error = "";
     }
   };
 

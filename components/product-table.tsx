@@ -56,7 +56,7 @@ export const NewProductTable = async () => {
           <TableHead className="w-[50px] font-bold text-foreground">
             No.
           </TableHead>
-          <TableHead className="w-[100px] font-bold text-center text-foreground">
+          <TableHead className="w-[100px] font-bold text-center text-foreground hidden">
             Product ID
           </TableHead>
           <TableHead className="w-[200px] font-bold text-center text-foreground">
@@ -82,7 +82,7 @@ export const NewProductTable = async () => {
             <TableCell className="text-foreground">
               {products.indexOf(product) + 1}
             </TableCell>
-            <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify">
+            <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify hidden">
               <span className="block max-w-[100px] break-words overflow-hidden">
                 {product.id}
               </span>

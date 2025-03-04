@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
 import { updateUser } from "@/lib/actions"; // Fungsi untuk update produk
 import { cn } from "@/lib/utils"; // Untuk className
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface EditUserModalProps {
   user: {
@@ -20,7 +21,7 @@ interface EditUserModalProps {
     name?: string | null;
     email?: string | null;
     username?: string | null;
-    role: string;
+    roles?: string[];
     password: string;
   };
   className?: string;
@@ -28,6 +29,7 @@ interface EditUserModalProps {
 
 export const EditUserModal = ({ user, className }: EditUserModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(user.roles?.[0] || "user"); // Hanya satu role
   const [state, formAction] = useActionState(updateUser, {
     success: false,
     error: undefined,
@@ -43,11 +45,15 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
     }
   }, [state.success]);
 
+  const handleRoleChange = (role: string) => {
+    setSelectedRole((prev) => (prev === role ? "" : role)); // Uncheck jika sudah dipilih
+  };
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      state.success = false; // Reset pesan sukses
-      state.error = ""; // Reset pesan error
+      state.success = false;
+      state.error = {};
     }
   };
 
@@ -66,6 +72,7 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
           className="mt-4 flex flex-col gap-4"
         >
           <input type="hidden" name="id" value={user.id} />
+          <input type="hidden" name="role" value={selectedRole} />
           <div>
             <label htmlFor="name" className="text-sm">
               Name
@@ -95,16 +102,32 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
             />
           </div>
           <div>
-            <label htmlFor="role" className="text-sm">
-              Role
-            </label>
-            <Input name="role" defaultValue={user.role} required />
+            <label className="text-sm">Roles</label>
+            <div className="flex flex-row items-center gap-5">
+              <label className="flex items-center gap-2">
+                <Checkbox
+                  checked={selectedRole === "admin"}
+                  onCheckedChange={() => handleRoleChange("admin")}
+                  disabled={selectedRole === "user"}
+                />
+                <span>Admin</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <Checkbox
+                  checked={selectedRole === "user"}
+                  onCheckedChange={() => handleRoleChange("user")}
+                  disabled={selectedRole === "admin"}
+                />
+                <span>User</span>
+              </label>
+            </div>
           </div>
+
           <div>
             <label htmlFor="password" className="text-sm">
               Password
             </label>
-            <Input name="password" required />
+            <Input name="password" required type="password" />
           </div>
 
           <Button type="submit">Update</Button>

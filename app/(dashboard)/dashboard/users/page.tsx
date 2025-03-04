@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Users",
 };
 
-const ProductsPage = () => {
+const UsersPage = () => {
   return (
     <div className="min-h-screen ">
       <div className="max-w-screen-lg mx-auto py-10">
@@ -20,4 +20,4 @@ const ProductsPage = () => {
   );
 };
 
-export default ProductsPage;
+export default UsersPage;

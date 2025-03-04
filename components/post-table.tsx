@@ -1,5 +1,5 @@
 import React from "react";
-import { getUsers } from "@/lib/data";
+import { getPosts } from "@/lib/data";
 import {
   Table,
   TableBody,
@@ -10,16 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { DeleteUserButton } from "./crud/user/delete-user-button";
-import { EditUserModal } from "./crud/user/edit-user-modal";
-import { auth } from "@/auth";
 
-export const UserTable = async () => {
-  const users = await getUsers();
-  const session = await auth();
+export const PostTable = async () => {
+  const posts = await getPosts();
 
-  if (!users?.length) {
-    return <h1 className="text-2xl">No Users found!</h1>;
+  if (!posts?.length) {
+    return <h1 className="text-2xl">No Posts found!</h1>;
   }
 
   return (
@@ -31,19 +27,19 @@ export const UserTable = async () => {
             No.
           </TableHead>
           <TableHead className="w-[100px] font-bold text-center text-foreground hidden">
-            User ID
+            Post ID
           </TableHead>
           <TableHead className="w-[200px] font-bold text-center text-foreground">
-            Name
+            Title
           </TableHead>
           <TableHead className="w-[250px] font-bold text-foreground">
-            Email
+            Content
           </TableHead>
           <TableHead className="w-[150px] font-bold text-foreground text-center">
             Image
           </TableHead>
           <TableHead className="w-[200px] text-center font-bold text-foreground">
-            Role
+            AuthorID
           </TableHead>
           <TableHead className="w-[100px] px-10 text-center font-bold text-foreground">
             Action
@@ -51,34 +47,34 @@ export const UserTable = async () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
+        {posts.map((post) => (
+          <TableRow key={post.id}>
             <TableCell className="text-foreground">
-              {users.indexOf(user) + 1}
+              {posts.indexOf(post) + 1}
             </TableCell>
             <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify hidden">
               <span className="block max-w-[100px] break-words overflow-hidden">
-                {user.id}
+                {post.id}
               </span>
             </TableCell>
             <TableCell className="font-medium text-center text-foreground">
-              {user.name}
+              {post.title}
             </TableCell>
-            <TableCell className="text-justify">{user.email}</TableCell>
+            <TableCell className="text-justify">{post.content}</TableCell>
             <TableCell className="flex justify-center">
               <Image
                 src="/avatar.png"
-                alt={user.username}
+                alt={post.title}
                 width={64}
                 height={64}
               />
             </TableCell>
             <TableCell className="text-center text-foreground">
-              {user.role}
+              {post.title}
             </TableCell>
             <TableCell>
               <div className="flex items-center justify-between gap-3">
-                <EditUserModal
+                {/* <EditUserModal
                   user={user}
                   className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
                 />
@@ -86,7 +82,7 @@ export const UserTable = async () => {
                 <DeleteUserButton
                   userId={user.id}
                   currentUserId={session?.user?.id}
-                />
+                /> */}
               </div>
             </TableCell>
           </TableRow>
@@ -96,4 +92,4 @@ export const UserTable = async () => {
   );
 };
 
-export default UserTable;
+export default PostTable;
