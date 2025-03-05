@@ -1,5 +1,6 @@
 "use server";
 import {
+  PostSchema,
   ProductSchema,
   RegisterSchema,
   SignInSchema,
@@ -229,5 +230,32 @@ export const updateUser = async (prevState: unknown, formData: FormData) => {
   } catch (error) {
     console.error("Update user failed:", error);
     return { error: "Failed to update user" };
+  }
+};
+
+// Post Actions
+
+export const createPost = async (prevState: unknown, formData: FormData) => {
+  const validatedFields = PostSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { title, content, authorId , image } = validatedFields.data;
+
+  try {
+    await prisma.post.create({
+      data: { title,content,authorId,image },
+    });
+    revalidatePath("/dashboard/posts");
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, message: `Failed to create product: ${error}` };
   }
 };

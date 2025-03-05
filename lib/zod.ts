@@ -37,3 +37,10 @@ export const UserSchema = object({
     .min(6, "Password must be at least 8 characters")
     .max(32, "Password must be less than 32 characters"),
 });
+
+export const PostSchema = object({
+  title: string().min(1, "Name must be more than 1 character"),
+  content: string().min(1, "Username must be more than 1 character"),
+  authorId: string().min(1, "Name must be more than 1 character"),
+  image: string().min(1, "Image path is required"),
+});

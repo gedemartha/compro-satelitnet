@@ -69,7 +69,7 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="name" className="text-sm">
+            <label htmlFor="description" className="text-sm">
               Description
             </label>
             <Textarea

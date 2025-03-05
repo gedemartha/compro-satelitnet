@@ -38,8 +38,8 @@ export const PostTable = async () => {
           <TableHead className="w-[150px] font-bold text-foreground text-center">
             Image
           </TableHead>
-          <TableHead className="w-[200px] text-center font-bold text-foreground">
-            AuthorID
+          <TableHead className="w-[200px] text-center font-bold text-foreground"> 
+            AuthorID 
           </TableHead>
           <TableHead className="w-[100px] px-10 text-center font-bold text-foreground">
             Action
@@ -70,7 +70,7 @@ export const PostTable = async () => {
               />
             </TableCell>
             <TableCell className="text-center text-foreground">
-              {post.title}
+              {post.authorId}
             </TableCell>
             <TableCell>
               <div className="flex items-center justify-between gap-3">
