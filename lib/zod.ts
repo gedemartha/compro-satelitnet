@@ -1,4 +1,4 @@
-import { object, string } from "zod";
+import { object, string, z } from "zod";
 
 export const SignInSchema = object({
   email: string().email("Invalid Email"),
@@ -43,4 +43,14 @@ export const PostSchema = object({
   content: string().min(1, "Username must be more than 1 character"),
   authorId: string().min(1, "Name must be more than 1 character"),
   image: string().min(1, "Image path is required"),
+});
+
+export const TestimonialSchema = object({
+  name: string().min(1, "Name must be more than 1 character"),
+  content: string().min(1, "Username must be more than 1 character"),
+  logo: string().min(1, "Image path is required"),
+  rating: z.preprocess(
+    (val) => (val === "" ? 0 : Number(val)), // Ubah "" jadi 0, lalu ubah ke number
+    z.number().min(1).max(5, "Rating must be between 1 and 5")
+  ),
 });

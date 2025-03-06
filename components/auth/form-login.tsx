@@ -1,11 +1,25 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useActionState } from "react";
 // import Link from "next/link";
 import { signInCredentials } from "@/lib/actions";
 import { NewLoginButton } from "@/components/button";
 
 const FormLogin = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const [state, formAction] = useActionState(signInCredentials, null);
   return (
     <form action={formAction} className="space-y-6">
@@ -30,6 +44,8 @@ const FormLogin = () => {
           name="email"
           id="email"
           placeholder="JaneDoe@gmail.com"
+          value={formData.email}
+          onChange={handleChange}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-foreground bg-background"
         />
         <div aria-live="polite" aria-atomic="true">
@@ -50,6 +66,8 @@ const FormLogin = () => {
           name="password"
           id="password"
           placeholder="*******"
+          value={formData.password}
+          onChange={handleChange}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-foreground bg-background"
         />
         <div aria-live="polite" aria-atomic="true">

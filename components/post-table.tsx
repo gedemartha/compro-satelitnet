@@ -10,6 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import { DeletePostButton } from "./crud/post/delete-post-button";
+import { EditPostModal } from "./crud/post/edit-post-modal";
 
 export const PostTable = async () => {
   const posts = await getPosts();
@@ -20,7 +22,7 @@ export const PostTable = async () => {
 
   return (
     <Table className="border-2 rounded-full border-border dark:border-white">
-      <TableCaption>A list of your products.</TableCaption>
+      <TableCaption>A list of your posts.</TableCaption>
       <TableHeader>
         <TableRow className="bg-secondary">
           <TableHead className="w-[50px] font-bold text-foreground">
@@ -38,8 +40,8 @@ export const PostTable = async () => {
           <TableHead className="w-[150px] font-bold text-foreground text-center">
             Image
           </TableHead>
-          <TableHead className="w-[200px] text-center font-bold text-foreground"> 
-            AuthorID 
+          <TableHead className="w-[200px] text-center font-bold text-foreground">
+            Author
           </TableHead>
           <TableHead className="w-[100px] px-10 text-center font-bold text-foreground">
             Action
@@ -70,19 +72,16 @@ export const PostTable = async () => {
               />
             </TableCell>
             <TableCell className="text-center text-foreground">
-              {post.authorId}
+              {post.author.name}
             </TableCell>
             <TableCell>
               <div className="flex items-center justify-between gap-3">
-                {/* <EditUserModal
-                  user={user}
+                <EditPostModal
+                  post={post}
                   className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
                 />
 
-                <DeleteUserButton
-                  userId={user.id}
-                  currentUserId={session?.user?.id}
-                /> */}
+                <DeletePostButton postId={post.id} />
               </div>
             </TableCell>
           </TableRow>

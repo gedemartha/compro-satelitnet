@@ -46,6 +46,7 @@ model Testimonial {
   id        String   @id @default(cuid())
   name      String
   content   String
+  logo      String?
   rating    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,7 +66,7 @@ model Product {
   id          String   @id @default(cuid())
   name        String
   description String
-  image       String
+  image       String?
   version     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

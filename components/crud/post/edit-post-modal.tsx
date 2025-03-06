@@ -12,41 +12,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { updateProduct } from "@/lib/actions"; // Fungsi untuk update produk
+import { updatePost } from "@/lib/actions"; // Fungsi untuk update produk
 import { cn } from "@/lib/utils"; // Untuk className
 
-interface EditProductModalProps {
-  product: {
+interface EditPostModalProps {
+  post: {
     id: string;
-    name: string;
-    description: string;
-    version: string;
+    title: string;
+    content: string;
+    image?: string | null;
+    authorId: string;
   };
   className?: string;
 }
 
-export const EditProductModal = ({
-  product,
-  className,
-}: EditProductModalProps) => {
+export const EditPostModal = ({ post, className }: EditPostModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(updateProduct, {
+  const [state, formAction] = useActionState(updatePost, {
     success: false,
     error: undefined,
   });
   const formRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    version: "",
+    title: "",
+    content: "",
+    image: "",
   });
 
   useEffect(() => {
     if (state.success) {
       setTimeout(() => {
         setIsOpen(false);
-        setFormData({ name: "", description: "", version: "" }); // Reset input hanya saat sukses
+        setFormData({ title: "", content: "", image: "" }); // Reset input hanya saat sukses
         formRef.current?.reset();
       }, 2000);
     }
@@ -76,65 +74,76 @@ export const EditProductModal = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit Post</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
           action={formAction}
           className="mt-4 flex flex-col gap-4"
         >
-          <input type="hidden" name="id" value={product.id} />
+          <input type="hidden" name="id" value={post.id} />
           <div>
-            <label htmlFor="name" className="text-sm">
-              Product ID
+            <label htmlFor="id" className="text-sm">
+              Post ID
             </label>
             <Input
               name="name"
-              value={product.id}
+              value={post.id}
               disabled
               onChange={handleChange}
             />
           </div>
           <div>
-            <label htmlFor="name" className="text-sm">
-              Product Name
+            <label htmlFor="title" className="text-sm">
+              Title
             </label>
             <Input
-              name="name"
+              name="title"
               required
-              value={formData.name}
+              value={formData.title}
               onChange={handleChange}
             />
           </div>
           <div>
-            <label htmlFor="description" className="text-sm">
+            <label htmlFor="content" className="text-sm">
               Description
             </label>
             <Textarea
-              name="description"
+              name="content"
               placeholder="e.g. Sistem Laundry untuk kebutuhan manajemen Laundry"
               required
               className="h-40"
-              value={formData.description}
+              value={formData.content}
               onChange={handleChange}
             />
           </div>
           <div>
-            <label htmlFor="version" className="text-sm">
-              Version
+            <label htmlFor="authorId" className="text-sm">
+              Author ID
             </label>
             <Input
-              name="version"
-              value={formData.version}
+              name="authorId"
+              value={post.authorId}
               onChange={handleChange}
+              disabled
+            />
+          </div>
+          <div>
+            <label htmlFor="image" className="text-sm">
+              Image
+            </label>
+            <Input
+              name="image"
               required
+              value={formData.image}
+              onChange={handleChange}
             />
           </div>
 
           <Button type="submit">Update</Button>
         </form>
         {state.success && (
-          <p className="text-green-500">Product updated successfully!</p>
+          <p className="text-green-500">Post updated successfully!</p>
         )}
       </DialogContent>
     </Dialog>
