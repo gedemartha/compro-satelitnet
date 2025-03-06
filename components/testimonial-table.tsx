@@ -31,14 +31,14 @@ export const TestimonialTable = async () => {
           <TableHead className="w-[100px] font-bold text-center text-foreground hidden">
             Testimonial ID
           </TableHead>
+          <TableHead className="w-[150px] font-bold text-foreground text-center">
+            Logo
+          </TableHead>
           <TableHead className="w-[200px] font-bold text-center text-foreground">
             Name
           </TableHead>
           <TableHead className="w-[250px] font-bold text-foreground">
             Content
-          </TableHead>
-          <TableHead className="w-[150px] font-bold text-foreground text-center">
-            Logo
           </TableHead>
           <TableHead className="w-[200px] text-center font-bold text-foreground">
             Rating
@@ -59,19 +59,19 @@ export const TestimonialTable = async () => {
                 {testimonial.id}
               </span>
             </TableCell>
-            <TableCell className="font-medium text-center text-foreground">
-              {testimonial.name}
-            </TableCell>
-            <TableCell className="text-justify">
-              {testimonial.content}
-            </TableCell>
-            <TableCell className="flex justify-center">
+            <TableCell className="flex pt-3 justify-center">
               <Image
                 src="/avatar.png"
                 alt={testimonial.name}
                 width={25}
                 height={10}
               />
+            </TableCell>
+            <TableCell className="font-medium text-center text-foreground">
+              {testimonial.name}
+            </TableCell>
+            <TableCell className="text-justify">
+              {testimonial.content}
             </TableCell>
             <TableCell className="text-center text-foreground">
               {testimonial.rating}/5 ⭐

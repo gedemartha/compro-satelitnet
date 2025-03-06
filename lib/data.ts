@@ -66,3 +66,20 @@ export const getTestimonials = async () => {
     }
   }
 };
+
+export const getMeetings = async () => {
+  const session = await auth();
+  if (!session || !session.user || session.user.role !== "admin")
+    redirect("/dashboard");
+  const role = session.user.role;
+
+  if (role === "admin") {
+    try {
+      const meetings = await prisma.meeting.findMany();
+
+      return meetings;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};

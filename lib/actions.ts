@@ -403,3 +403,22 @@ export async function deleteTestimonial(
     return { error: "Failed to delete product" }; // Mengembalikan error jika gagal
   }
 }
+
+// Meeting actions
+
+export const updateMeetingStatus = async (
+  meetingId: string,
+  newStatus: "Approved" | "Rejected"
+) => {
+  try {
+    await prisma.meeting.update({
+      where: { id: meetingId },
+      data: { status: newStatus },
+    });
+    revalidatePath("/dashboard/meetings");
+    return true;
+  } catch (error) {
+    console.error("Failed to update meeting status:", error);
+    return false;
+  }
+};
