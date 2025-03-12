@@ -17,77 +17,75 @@ export const PostTable = async () => {
   const posts = await getPosts();
 
   if (!posts?.length) {
-    return <h1 className="text-2xl">No Posts found!</h1>;
+    return <h1 className="text-2xl text-center">No Posts found!</h1>;
   }
 
   return (
-    <Table className="border-2 rounded-full border-border dark:border-white">
-      <TableCaption>A list of your posts.</TableCaption>
-      <TableHeader>
-        <TableRow className="bg-secondary">
-          <TableHead className="w-[50px] font-bold text-foreground">
-            No.
-          </TableHead>
-          <TableHead className="w-[100px] font-bold text-center text-foreground hidden">
-            Post ID
-          </TableHead>
-          <TableHead className="w-[200px] font-bold text-center text-foreground">
-            Title
-          </TableHead>
-          <TableHead className="w-[250px] font-bold text-foreground">
-            Content
-          </TableHead>
-          <TableHead className="w-[150px] font-bold text-foreground text-center">
-            Image
-          </TableHead>
-          <TableHead className="w-[200px] text-center font-bold text-foreground">
-            Author
-          </TableHead>
-          <TableHead className="w-[100px] px-10 text-center font-bold text-foreground">
-            Action
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell className="text-foreground">
-              {posts.indexOf(post) + 1}
-            </TableCell>
-            <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify hidden">
-              <span className="block max-w-[100px] break-words overflow-hidden">
-                {post.id}
-              </span>
-            </TableCell>
-            <TableCell className="font-medium text-center text-foreground">
-              {post.title}
-            </TableCell>
-            <TableCell className="text-justify">{post.content}</TableCell>
-            <TableCell className="flex justify-center">
-              <Image
-                src="/avatar.png"
-                alt={post.title}
-                width={64}
-                height={64}
-              />
-            </TableCell>
-            <TableCell className="text-center text-foreground">
-              {post.author.name}
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center justify-between gap-3">
-                <EditPostModal
-                  post={post}
-                  className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
-                />
-
-                <DeletePostButton postId={post.id} />
-              </div>
-            </TableCell>
+    <div className="overflow-x-auto">
+      <Table className="border-2 border-border dark:border-white">
+        <TableCaption>A list of your posts.</TableCaption>
+        <TableHeader>
+          <TableRow className="bg-secondary">
+            <TableHead className="w-12 text-center font-bold text-foreground">
+              No.
+            </TableHead>
+            <TableHead className="w-40 text-center font-bold text-foreground">
+              Title
+            </TableHead>
+            <TableHead className="w-60 font-bold text-foreground">
+              Content
+            </TableHead>
+            <TableHead className="w-40 text-center font-bold text-foreground">
+              Image
+            </TableHead>
+            <TableHead className="w-40 text-center font-bold text-foreground">
+              Author
+            </TableHead>
+            <TableHead className="w-32 text-center font-bold text-foreground">
+              Actions
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {posts.map((post, index) => (
+            <TableRow key={post.id}>
+              <TableCell className="text-center text-foreground">
+                {index + 1}
+              </TableCell>
+              <TableCell className="text-center font-medium text-foreground">
+                {post.title}
+              </TableCell>
+              <TableCell className="text-justify">{post.content}</TableCell>
+              <TableCell className="flex justify-center">
+                {post.image && post.image.startsWith("/") ? (
+                  <Image
+                    src={post.image}
+                    alt={post.title || "Post image"}
+                    width={200}
+                    height={200}
+                    className="rounded-md object-cover mx-auto"
+                  />
+                ) : (
+                  <span className="text-gray-500 italic">No image</span>
+                )}
+              </TableCell>
+              <TableCell className="text-center text-foreground">
+                {post.author.name}
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center justify-center gap-2">
+                  <EditPostModal
+                    post={post}
+                    className="px-3 py-2 text-sm bg-orange-500 hover:bg-orange-950"
+                  />
+                  <DeletePostButton postId={post.id} />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

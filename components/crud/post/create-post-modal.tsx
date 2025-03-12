@@ -12,49 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { createPost} from "@/lib/actions";
+import { createPost } from "@/lib/actions";
 import { cn } from "@/lib/utils"; // Import fungsi cn dari utils.ts
+import Image from "next/image";
 
 interface CreatePostModalProps {
-  className?: string;  // Menambahkan props className
+  className?: string;
 }
 
-export const CreatePostModal = ({ className}: CreatePostModalProps ) => {
+export const CreatePostModal = ({ className }: CreatePostModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null); // State untuk user ID
-  const [state, formAction] = useActionState(createPost, {
-    success: false,
-    error: undefined,
-  });
-
-  const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    image: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-  
-  const formRef = useRef<HTMLFormElement>(null); // Untuk mereset form
-
-  // Tutup modal & reset form ketika produk berhasil dibuat
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   useEffect(() => {
-    if (state.success) {
-      setTimeout(() => {
-        setIsOpen(false); // Tutup modal setelah 1.5 detik
-        setFormData({ title: "", content: "", image: ""}); // Reset input hanya saat sukses
-        formRef.current?.reset(); // Reset form input
-      }, 2000);
-    }
-  }, [state.success]);
-
-  useEffect(() => {
-    // Fetch currentUserId dari API saat modal dibuka
     if (isOpen) {
       fetch("/api/auth/user")
         .then((res) => res.json())
@@ -62,35 +31,66 @@ export const CreatePostModal = ({ className}: CreatePostModalProps ) => {
         .catch(() => setCurrentUserId(null));
     }
   }, [isOpen]);
+  const [state, formAction] = useActionState(createPost, {
+    success: false,
+    error: undefined,
+  });
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (state.success) {
+      setTimeout(() => {
+        setIsOpen(false);
+        formRef.current?.reset();
+        setImagePreview(null);
+        setSelectedFile(null);
+      }, 2000);
+    }
+  }, [state.success]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      state.success = false; // Reset pesan sukses
-      state.error = {}; // Reset pesan error
+      state.success = false;
+      state.error = {};
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className={cn("mb-4", className)}>Add Post</Button>
+        <Button className={cn("mb-4", className)}>Create Post</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-screen overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a New Post</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
-          action={formAction}
+          action={async (formData) => {
+            if (selectedFile) {
+              formData.append("image", selectedFile);
+            }
+            formAction(formData);
+          }}
           className="mt-4 flex flex-col gap-4"
         >
           <div className="flex flex-col gap-1">
             <label htmlFor="title" className="text-sm">
-              Post Title
+              Title
             </label>
-            <Input name="title" placeholder="e.g. Laundry System" required onChange={handleChange} value={formData.title}/>
+            <Input name="title" placeholder="Enter post title" required />
             {state.error?.title && (
               <p className="text-red-500 text-sm">{state.error.title}</p>
             )}
@@ -101,21 +101,15 @@ export const CreatePostModal = ({ className}: CreatePostModalProps ) => {
             </label>
             <Textarea
               name="content"
-              placeholder="e.g. Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, veritatis." 
+              placeholder="Write something..."
               required
-              className="h-44"
-              value={formData.content}
-              onChange={handleChange}
             />
             {state.error?.content && (
               <p className="text-red-500 text-sm">{state.error.content}</p>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="authorId" className="text-sm hidden">
-              Author ID 
-            </label>
-            <Input name="authorId" placeholder="(automatically)" type="hidden" defaultValue={currentUserId ?? ""}/>
+            <Input name="authorId" type="hidden" value={currentUserId ?? ""} />
             {state.error?.authorId && (
               <p className="text-red-500 text-sm">{state.error.authorId}</p>
             )}
@@ -124,17 +118,24 @@ export const CreatePostModal = ({ className}: CreatePostModalProps ) => {
             <label htmlFor="image" className="text-sm">
               Upload Image
             </label>
-
-            <Input name="image" placeholder="Image Path" value={formData.image} required onChange={handleChange}/>
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
+            {imagePreview && (
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                className="object-contain rounded-md mx-auto"
+                width={200}
+                height={200}
+              />
+            )}
             {state.error?.image && (
               <p className="text-red-500 text-sm">{state.error.image}</p>
             )}
           </div>
-
           <Button type="submit">Create</Button>
         </form>
         {state.success && (
-          <p className="text-green-500">Post added successfully!</p>
+          <p className="text-green-500">Post created successfully!</p>
         )}
       </DialogContent>
     </Dialog>

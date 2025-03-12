@@ -49,7 +49,7 @@ export const NewProductTable = async () => {
   }
 
   return (
-    <Table className="border-2 rounded-full border-border dark:border-white">
+    <Table className="border-2 rounded-lg border-border dark:border-white">
       <TableCaption>A list of your products.</TableCaption>
       <TableHeader>
         <TableRow className="bg-secondary">
@@ -77,11 +77,9 @@ export const NewProductTable = async () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <TableRow key={product.id}>
-            <TableCell className="text-foreground">
-              {products.indexOf(product) + 1}
-            </TableCell>
+            <TableCell className="text-foreground">{index + 1}</TableCell>
             <TableCell className="w-[100px] font-bold text-foreground break-words overflow-hidden text-justify hidden">
               <span className="block max-w-[100px] break-words overflow-hidden">
                 {product.id}
@@ -93,13 +91,18 @@ export const NewProductTable = async () => {
             <TableCell className="text-justify">
               {product.description}
             </TableCell>
-            <TableCell className="">
-              <Image
-                src="/logo-satelitnet-transparent.png"
-                alt={product.name}
-                width={800}
-                height={600}
-              />
+            <TableCell className="text-center">
+              {product.image && product.image.startsWith("/") ? (
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={150}
+                  height={150}
+                  className="rounded-md object-cover mx-auto"
+                />
+              ) : (
+                <span className="text-gray-500">No Image</span>
+              )}
             </TableCell>
             <TableCell className="text-center text-foreground">
               {product.version}
@@ -110,7 +113,6 @@ export const NewProductTable = async () => {
                   product={product}
                   className="px-4 py-2 text-sm max-w-md w-full bg-orange-500 hover:bg-orange-950"
                 />
-
                 <DeleteProductButton productId={product.id} />
               </div>
             </TableCell>

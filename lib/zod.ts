@@ -26,7 +26,7 @@ export const ProductSchema = object({
   name: string().min(1, "Product name is required"),
   description: string().min(5, "Description must be at least 5 characters"),
   version: string().min(1, "Version is required"),
-  image: string().min(1, "Image path is required"),
+  image: string().optional(),
 });
 
 export const UserSchema = object({
@@ -42,7 +42,7 @@ export const PostSchema = object({
   title: string().min(1, "Name must be more than 1 character"),
   content: string().min(1, "Username must be more than 1 character"),
   authorId: string().min(1, "Name must be more than 1 character"),
-  image: string().min(1, "Image path is required"),
+  image: string().optional(),
 });
 
 export const TestimonialSchema = object({

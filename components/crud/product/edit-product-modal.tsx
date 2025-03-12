@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, startTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useActionState } from "react";
-import { updateProduct } from "@/lib/actions"; // Fungsi untuk update produk
-import { cn } from "@/lib/utils"; // Untuk className
+import { updateProduct } from "@/lib/actions";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface EditProductModalProps {
   product: {
@@ -21,6 +21,7 @@ interface EditProductModalProps {
     name: string;
     description: string;
     version: string;
+    image?: string | null;
   };
   className?: string;
 }
@@ -30,34 +31,32 @@ export const EditProductModal = ({
   className,
 }: EditProductModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(updateProduct, {
-    success: false,
-    error: undefined,
-  });
   const formRef = useRef<HTMLFormElement>(null);
-
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    version: "",
+    name: product.name,
+    description: product.description,
+    version: product.version,
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    product.image || null
+  );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // Reset form saat modal ditutup
   useEffect(() => {
-    if (state.success) {
-      setTimeout(() => {
-        setIsOpen(false);
-        setFormData({ name: "", description: "", version: "" }); // Reset input hanya saat sukses
-        formRef.current?.reset();
-      }, 2000);
+    if (!isOpen) {
+      setFormData({
+        name: product.name,
+        description: product.description,
+        version: product.version,
+      });
+      setImagePreview(product.image || null);
+      setSelectedFile(null);
     }
-  }, [state.success]);
+  }, [isOpen, product]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open) {
-      state.success = false;
-      state.error = "";
-    }
   };
 
   const handleChange = (
@@ -69,57 +68,73 @@ export const EditProductModal = ({
     });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file)); // Tampilkan preview gambar yang baru
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      const newFormData = new FormData();
+      newFormData.append("id", product.id);
+      newFormData.append("name", formData.name);
+      newFormData.append("description", formData.description);
+      newFormData.append("version", formData.version);
+
+      // Tambahkan gambar hanya jika ada file baru
+      if (selectedFile) {
+        newFormData.append("image", selectedFile);
+      }
+
+      const result = await updateProduct({}, newFormData);
+
+      if (result.success) {
+        setIsOpen(false); // Tutup modal setelah berhasil update
+      }
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className={cn("p-6", className)}>Edit</Button>
+        <Button className={cn("", className)}>Edit</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
-          action={formAction}
+          onSubmit={handleSubmit}
           className="mt-4 flex flex-col gap-4"
         >
-          <input type="hidden" name="id" value={product.id} />
-          <div>
-            <label htmlFor="name" className="text-sm">
-              Product ID
-            </label>
-            <Input
-              name="name"
-              value={product.id}
-              disabled
-              onChange={handleChange}
-            />
-          </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <label htmlFor="name" className="text-sm">
               Product Name
             </label>
             <Input
               name="name"
-              required
               value={formData.name}
               onChange={handleChange}
+              required
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <label htmlFor="description" className="text-sm">
               Description
             </label>
             <Textarea
               name="description"
-              placeholder="e.g. Sistem Laundry untuk kebutuhan manajemen Laundry"
-              required
-              className="h-40"
               value={formData.description}
               onChange={handleChange}
+              required
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <label htmlFor="version" className="text-sm">
               Version
             </label>
@@ -130,12 +145,26 @@ export const EditProductModal = ({
               required
             />
           </div>
-
+          <div className="flex flex-col gap-1">
+            <label htmlFor="image" className="text-sm">
+              Upload Image
+            </label>
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
+            {imagePreview && (
+              <>
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  className="object-cover rounded-md mx-auto mt-3"
+                  width={200}
+                  height={200}
+                />
+                <span className="text-xs mx-auto">{product.image}</span>
+              </>
+            )}
+          </div>
           <Button type="submit">Update</Button>
         </form>
-        {state.success && (
-          <p className="text-green-500">Product updated successfully!</p>
-        )}
       </DialogContent>
     </Dialog>
   );

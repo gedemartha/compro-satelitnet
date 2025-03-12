@@ -14,9 +14,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
 import { createProduct } from "@/lib/actions";
 import { cn } from "@/lib/utils"; // Import fungsi cn dari utils.ts
+import Image from "next/image";
 
 interface CreateProductModalProps {
-  className?: string; // Menambahkan props className
+  className?: string;
 }
 
 export const CreateProductModal = ({ className }: CreateProductModalProps) => {
@@ -25,14 +26,18 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
     success: false,
     error: undefined,
   });
-  const formRef = useRef<HTMLFormElement>(null); // Untuk mereset form
 
-  // Tutup modal & reset form ketika produk berhasil dibuat
+  const formRef = useRef<HTMLFormElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   useEffect(() => {
     if (state.success) {
       setTimeout(() => {
-        setIsOpen(false); // Tutup modal setelah 1.5 detik
-        formRef.current?.reset(); // Reset form input
+        setIsOpen(false);
+        formRef.current?.reset();
+        setImagePreview(null);
+        setSelectedFile(null);
       }, 2000);
     }
   }, [state.success]);
@@ -40,8 +45,16 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      state.success = false; // Reset pesan sukses
-      state.error = {}; // Reset pesan error
+      state.success = false;
+      state.error = {};
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -50,13 +63,18 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
       <DialogTrigger asChild>
         <Button className={cn("mb-4", className)}>Add Product</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-screen overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a New Product</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
-          action={formAction}
+          action={async (formData) => {
+            if (selectedFile) {
+              formData.append("image", selectedFile);
+            }
+            formAction(formData);
+          }}
           className="mt-4 flex flex-col gap-4"
         >
           <div className="flex flex-col gap-1">
@@ -74,16 +92,15 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
             </label>
             <Textarea
               name="description"
-              placeholder="e.g. Sistem Laundry untuk kebutuhan manajemen Laundry"
+              placeholder="Product details"
               required
-              className=""
             />
             {state.error?.description && (
               <p className="text-red-500 text-sm">{state.error.description}</p>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="Version" className="text-sm">
+            <label htmlFor="version" className="text-sm">
               Version
             </label>
             <Input name="version" placeholder="Version" required />
@@ -95,13 +112,25 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
             <label htmlFor="image" className="text-sm">
               Upload Image
             </label>
-
-            <Input name="image" placeholder="Image Path" required />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              required
+            />
+            {imagePreview && (
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                className="object-contain rounded-md mx-auto"
+                width={200}
+                height={200}
+              />
+            )}
             {state.error?.image && (
               <p className="text-red-500 text-sm">{state.error.image}</p>
             )}
           </div>
-
           <Button type="submit">Create</Button>
         </form>
         {state.success && (

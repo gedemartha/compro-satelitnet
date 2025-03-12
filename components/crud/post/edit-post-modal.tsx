@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, startTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useActionState } from "react";
-import { updatePost } from "@/lib/actions"; // Fungsi untuk update produk
-import { cn } from "@/lib/utils"; // Untuk className
+import { updatePost } from "@/lib/actions";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface EditPostModalProps {
   post: {
@@ -28,34 +28,29 @@ interface EditPostModalProps {
 
 export const EditPostModal = ({ post, className }: EditPostModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(updatePost, {
-    success: false,
-    error: undefined,
-  });
   const formRef = useRef<HTMLFormElement>(null);
-
   const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    image: "",
+    title: post.title,
+    content: post.content,
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    post.image || null
+  );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
-    if (state.success) {
-      setTimeout(() => {
-        setIsOpen(false);
-        setFormData({ title: "", content: "", image: "" }); // Reset input hanya saat sukses
-        formRef.current?.reset();
-      }, 2000);
+    if (!isOpen) {
+      setFormData({
+        title: post.title,
+        content: post.content,
+      });
+      setImagePreview(post.image || null);
+      setSelectedFile(null);
     }
-  }, [state.success]);
+  }, [isOpen, post]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open) {
-      state.success = false;
-      state.error = "";
-    }
   };
 
   const handleChange = (
@@ -67,84 +62,95 @@ export const EditPostModal = ({ post, className }: EditPostModalProps) => {
     });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      const newFormData = new FormData();
+      newFormData.append("id", post.id);
+      newFormData.append("title", formData.title);
+      newFormData.append("content", formData.content);
+
+      if (selectedFile) {
+        newFormData.append("image", selectedFile);
+      }
+
+      const result = await updatePost({}, newFormData);
+
+      if (result.success) {
+        setIsOpen(false);
+      }
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className={cn("p-6", className)}>Edit</Button>
+        <Button className={cn("", className)}>Edit</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Post</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
-          action={formAction}
+          onSubmit={handleSubmit}
           className="mt-4 flex flex-col gap-4"
         >
-          <input type="hidden" name="id" value={post.id} />
-          <div>
-            <label htmlFor="id" className="text-sm">
-              Post ID
-            </label>
-            <Input
-              name="name"
-              value={post.id}
-              disabled
-              onChange={handleChange}
-            />
-          </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <label htmlFor="title" className="text-sm">
               Title
             </label>
             <Input
               name="title"
-              required
               value={formData.title}
               onChange={handleChange}
+              required
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <label htmlFor="content" className="text-sm">
-              Description
+              Content
             </label>
             <Textarea
               name="content"
-              placeholder="e.g. Sistem Laundry untuk kebutuhan manajemen Laundry"
-              required
-              className="h-40"
               value={formData.content}
               onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="authorId" className="text-sm">
-              Author ID
-            </label>
-            <Input
-              name="authorId"
-              value={post.authorId}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-          <div>
-            <label htmlFor="image" className="text-sm">
-              Image
-            </label>
-            <Input
-              name="image"
               required
-              value={formData.image}
-              onChange={handleChange}
             />
           </div>
-
+          <div className="flex flex-col gap-1">
+            <label htmlFor="image" className="text-sm">
+              Upload Image
+            </label>
+            <Input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {imagePreview && (
+              <>
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  className="object-cover rounded-md mx-auto mt-3"
+                  width={200}
+                  height={200}
+                />
+                <span className="text-xs mx-auto">{post.image}</span>
+              </>
+            )}
+          </div>
           <Button type="submit">Update</Button>
         </form>
-        {state.success && (
-          <p className="text-green-500">Post updated successfully!</p>
-        )}
       </DialogContent>
     </Dialog>
   );

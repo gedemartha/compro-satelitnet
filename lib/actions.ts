@@ -13,6 +13,8 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { unlink, writeFile } from "fs/promises";
+import { join } from "path";
 
 //Register or Sign Up Action
 
@@ -82,9 +84,39 @@ export const signInCredentials = async (
 //  Product Actions
 
 export const createProduct = async (prevState: unknown, formData: FormData) => {
-  const validatedFields = ProductSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
+  // Ambil data dari formData
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const version = formData.get("version") as string;
+  const image = formData.get("image") as File | null;
+
+  let imagePath = "";
+
+  // Jika ada file image, simpan ke public/uploads/
+  if (image) {
+    try {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `product-${Date.now()}-${image.name}`;
+      const filepath = join(process.cwd(), "public/uploads", filename);
+
+      await writeFile(filepath, buffer);
+      imagePath = `/uploads/${filename}`;
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to upload image, Error:${error}`,
+      };
+    }
+  }
+
+  // Validasi data menggunakan Zod
+  const validatedFields = await ProductSchema.safeParseAsync({
+    name,
+    description,
+    version,
+    image: imagePath, // Pastikan imagePath dikirim sebagai string
+  });
 
   if (!validatedFields.success) {
     return {
@@ -92,12 +124,17 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
     };
   }
 
-  const { name, description, version, image } = validatedFields.data;
-
   try {
+    // Simpan ke database
     await prisma.product.create({
-      data: { name, description, version, image },
+      data: {
+        name,
+        description,
+        version,
+        image: imagePath,
+      },
     });
+
     revalidatePath("/dashboard/products");
 
     return { success: true };
@@ -111,18 +148,66 @@ export const updateProduct = async (prevState: unknown, formData: FormData) => {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
   const version = formData.get("version") as string;
+  const image = formData.get("image") as File | null;
 
   if (!id || !name || !description || !version) {
     return { error: "All fields are required" };
   }
 
   try {
+    // Ambil produk lama dari database
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!existingProduct) {
+      return { error: "Product not found" };
+    }
+
+    let imagePath = existingProduct.image || ""; // Gunakan gambar lama jika tidak diubah
+
+    // Jika ada file gambar baru, simpan ke /public/uploads/
+    if (image) {
+      try {
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const filename = `${Date.now()}-${image.name}`;
+        const filepath = join(process.cwd(), "public/uploads", filename);
+
+        await writeFile(filepath, buffer);
+        imagePath = `/uploads/${filename}`;
+      } catch (error) {
+        return { error: `Failed to upload image: ${error}` };
+      }
+    }
+
+    // Validasi data menggunakan Zod
+    const validatedFields = await ProductSchema.safeParseAsync({
+      name,
+      description,
+      version,
+      image: imagePath,
+    });
+
+    if (!validatedFields.success) {
+      return {
+        error: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    // Update produk di database
     await prisma.product.update({
       where: { id },
-      data: { name, description, version },
+      data: {
+        name,
+        description,
+        version,
+        image: imagePath,
+      },
     });
 
     revalidatePath("/dashboard/products"); // Refresh tabel produk tanpa reload halaman
+
     return { success: true };
   } catch (error) {
     console.error("Update product failed:", error);
@@ -130,20 +215,43 @@ export const updateProduct = async (prevState: unknown, formData: FormData) => {
   }
 };
 
-export async function deleteProduct(
-  prevState: unknown,
-  formData: FormData // Data yang dikirimkan dari form
-) {
+export async function deleteProduct(prevState: unknown, formData: FormData) {
   const id = formData.get("id") as string;
   if (!id) return { error: "Product ID is required" };
 
   try {
+    // Ambil informasi produk terlebih dahulu
+    const product = await prisma.product.findUnique({
+      where: { id },
+      select: { image: true },
+    });
+
+    if (!product) {
+      return { error: "Product not found" };
+    }
+
+    // Jika ada gambar, hapus dari folder uploads
+    if (product.image) {
+      // Pastikan path benar dengan hanya mengambil nama file
+      const filename = product.image.replace("/uploads/", "");
+      const imagePath = join(process.cwd(), "public/uploads", filename);
+
+      try {
+        await unlink(imagePath);
+        console.log(`Image deleted: ${imagePath}`);
+      } catch (error) {
+        console.error("Failed to delete image:", error);
+      }
+    }
+
+    // Hapus produk dari database
     await prisma.product.delete({ where: { id } });
+
     revalidatePath("/dashboard/products");
-    return { success: true }; // Mengembalikan objek sukses
-    // eslint-disable-next-line
+    return { success: true };
   } catch (error) {
-    return { error: "Failed to delete product" }; // Mengembalikan error jika gagal
+    console.error("Delete product failed:", error);
+    return { error: "Failed to delete product" };
   }
 }
 
@@ -237,9 +345,39 @@ export const updateUser = async (prevState: unknown, formData: FormData) => {
 // Post Actions
 
 export const createPost = async (prevState: unknown, formData: FormData) => {
-  const validatedFields = PostSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
+  // Ambil data dari formData
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const authorId = formData.get("authorId") as string;
+  const image = formData.get("image") as File | null;
+
+  let imagePath = "";
+
+  // Jika ada file image, simpan ke public/uploads/
+  if (image) {
+    try {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `post-${Date.now()}-${image.name}`;
+      const filepath = join(process.cwd(), "public/uploads", filename);
+
+      await writeFile(filepath, buffer);
+      imagePath = `/uploads/${filename}`;
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to upload image, Error: ${error}`,
+      };
+    }
+  }
+
+  // Validasi data menggunakan Zod
+  const validatedFields = await PostSchema.safeParseAsync({
+    title,
+    content,
+    authorId,
+    image: imagePath, // Pastikan imagePath dikirim sebagai string
+  });
 
   if (!validatedFields.success) {
     return {
@@ -247,70 +385,100 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
     };
   }
 
-  const { title, content, authorId, image } = validatedFields.data;
-
   try {
+    // Simpan ke database
     await prisma.post.create({
-      data: { title, content, authorId, image },
+      data: {
+        title,
+        content,
+        authorId,
+        image: imagePath,
+      },
     });
+
     revalidatePath("/dashboard/posts");
 
     return { success: true };
   } catch (error) {
-    return { success: false, message: `Failed to create product: ${error}` };
+    return { success: false, message: `Failed to create post: ${error}` };
   }
 };
 
 export const updatePost = async (prevState: unknown, formData: FormData) => {
-  const validatedFields = PostSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
-
-  if (!validatedFields.success) {
-    return {
-      error: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
   const id = formData.get("id") as string;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const image = formData.get("image") as string;
-  const authorId = formData.get("authorId") as string;
+  const image = formData.get("image") as File | null;
 
-  if (!id || !title || !content || !image || !authorId) {
-    return { error: "All fields are required" };
+  let imagePath = "";
+
+  if (image) {
+    try {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `post-${Date.now()}-${image.name}`;
+      const filepath = join(process.cwd(), "public/uploads", filename);
+
+      await writeFile(filepath, buffer);
+      imagePath = `/uploads/${filename}`;
+    } catch (error) {
+      return { success: false, message: `Failed to upload image: ${error}` };
+    }
   }
 
   try {
     await prisma.post.update({
       where: { id },
-      data: { title, content, image, authorId },
+      data: {
+        title,
+        content,
+        image: imagePath || undefined, // Jika tidak ada gambar baru, pakai yang lama
+      },
     });
 
-    revalidatePath("/dashboard/users"); // Refresh tabel produk tanpa reload halaman
+    revalidatePath("/dashboard/posts");
     return { success: true };
   } catch (error) {
-    console.error("Update user failed:", error);
-    return { error: "Failed to update user" };
+    return { success: false, message: `Failed to update post: ${error}` };
   }
 };
 
-export async function deletePost(
-  prevState: unknown,
-  formData: FormData // Data yang dikirimkan dari form
-) {
+export async function deletePost(prevState: unknown, formData: FormData) {
   const id = formData.get("id") as string;
-
-  if (!id) return { error: "User ID is required" };
+  if (!id) return { error: "Post ID is required" };
 
   try {
+    // Ambil informasi post terlebih dahulu
+    const post = await prisma.post.findUnique({
+      where: { id },
+      select: { image: true },
+    });
+
+    if (!post) {
+      return { error: "Post not found" };
+    }
+
+    // Jika ada gambar, hapus dari folder uploads
+    if (post.image) {
+      // Filename diambil langsung dari database
+      const imagePath = join(process.cwd(), "public/", post.image);
+
+      try {
+        await unlink(imagePath);
+        console.log(`Image deleted: ${imagePath}`);
+      } catch (error) {
+        console.error("Failed to delete image:", error);
+      }
+    }
+
+    // Hapus post dari database
     await prisma.post.delete({ where: { id } });
-    revalidatePath("/dashboard/users");
-    return { success: true }; // Mengembalikan objek sukses
-    // eslint-disable-next-line
+
+    revalidatePath("/dashboard/posts");
+    return { success: true };
   } catch (error) {
-    return { error: "Failed to delete user" }; // Mengembalikan error jika gagal
+    console.error("Delete post failed:", error);
+    return { error: "Failed to delete post" };
   }
 }
 
