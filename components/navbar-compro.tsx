@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 export const NavbarCompro = () => {
   return (
-    <nav className="w-full border-b-2 border-border bg-background  sticky top-0 z-10 shadow-md">
+    <nav className="w-full border-b-[1px] border-border bg-background  sticky top-0 z-50 shadow-md">
       <div className="flex items-center justify-between mx-auto p-4 ">
         <div>
           <Link href="/dashboard">
