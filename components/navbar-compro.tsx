@@ -23,19 +23,19 @@ export const NavbarCompro = () => {
                 <li className="text-base">Home</li>
               </Button>
             </Link>
+            <a href="#about" className="cursor-pointer">
+              <Button variant={"link"} className="text-foreground p-0">
+                <li className="text-base">Tentang Kami</li>
+              </Button>
+            </a>
             <Link href="#">
               <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">About Us</li>
+                <li className="text-base">Produk</li>
               </Button>
             </Link>
             <Link href="#">
               <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Products</li>
-              </Button>
-            </Link>
-            <Link href="#">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Testimonials</li>
+                <li className="text-base">Testimoni</li>
               </Button>
             </Link>
             <Link href="#">
@@ -47,7 +47,7 @@ export const NavbarCompro = () => {
             </Link>
             <Link href="#">
               <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Book a Meeting</li>
+                <li className="text-base">Jadwalkan Meeting</li>
               </Button>
             </Link>
           </ul>
