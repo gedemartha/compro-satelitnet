@@ -3,51 +3,78 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 export const NavbarCompro = () => {
   return (
-    <nav className="w-full border-b-[1px] border-border bg-background  sticky top-0 z-50 shadow-md">
-      <div className="flex items-center justify-between mx-auto p-4 ">
+    <nav className="w-full border-b-[1px] border-border bg-background sticky top-0 z-50 shadow-md">
+      <div className="flex items-center justify-between mx-auto px-4 py-2">
         <div>
           <Link href="/dashboard">
             <Image
               src="/logo-satelitnet-transparent.png"
               alt="Logo"
-              width={128}
-              height={36}
+              width={120}
+              height={24}
               priority
             />
           </Link>
         </div>
         <div className="flex gap-5">
           <ul className="flex items-center gap-4">
-            <Link href="/dashboard">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Home</li>
-              </Button>
-            </Link>
-            <a href="#about" className="cursor-pointer">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Tentang Kami</li>
-              </Button>
-            </a>
-            <Link href="#">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Produk</li>
-              </Button>
-            </Link>
-            <Link href="#">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Testimoni</li>
-              </Button>
-            </Link>
+            <li>
+              <Link
+                href="/dashboard"
+                className="text-base text-foreground p-0 font-semibold hover:underline"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#about"
+                className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
+              >
+                Tentang Kami
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#services"
+                className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
+              >
+                Layanan
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#"
+                className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
+              >
+                Produk
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#"
+                className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
+              >
+                Testimoni
+              </Link>
+            </li>
+
             <Link href="#">
               <li>
-                <Button variant={"link"} className="text-foreground p-0">
-                  <li className="text-base">Feedback</li>
+                <Button
+                  variant="outline"
+                  className="p-2 bg-primary hover:bg-purple-950 hover:underline "
+                >
+                  <li className="text-base text-white">Beri Ulasan</li>
                 </Button>
               </li>
             </Link>
             <Link href="#">
-              <Button variant={"link"} className="text-foreground p-0">
-                <li className="text-base">Jadwalkan Meeting</li>
+              <Button
+                variant="outline"
+                className=" p-2 bg-primary hover:bg-purple-950 hover:underline"
+              >
+                <li className="text-base text-white  ">Jadwalkan Meeting</li>
               </Button>
             </Link>
           </ul>

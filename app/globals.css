@@ -72,10 +72,15 @@
   }
 
   .text-main {
-    @apply bg-clip-text text-transparent bg-gradient-to-br dark:bg-gradient-to-br from-primary to-foreground dark:from-foreground dark:to-primary bg-opacity-50;
+    @apply bg-clip-text text-transparent bg-gradient-to-br dark:bg-gradient-to-br from-primary to-foreground dark:from-foreground dark:to-primary;
   }
 
   /* * {
     @apply border-blue-500 border;
   } */
+}
+
+html {
+  --scroll-behavior: smooth !important;
+  scroll-behavior: smooth !important;
 }
