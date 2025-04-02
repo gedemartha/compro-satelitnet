@@ -28,7 +28,7 @@ const Services = () => {
       id="services"
       className="w-full py-24 bg-gradient-to-b from-accent to-secondary"
     >
-      <div className="max-w-5xl mx-auto space-y-16">
+      <div className="max-w-5xl mx-auto space-y-16 px-6">
         <h1 className="text-main text-5xl font-bold text-center pb-1">
           Layanan Kami
         </h1>
@@ -36,42 +36,43 @@ const Services = () => {
         {services.map((service) => (
           <div
             key={service.id}
-            className={`flex items-center justify-between gap-12 ${
+            className={`flex items-center justify-between gap-12 max-md:flex-col ${
               service.imagePosition === "right"
-                ? "flex-row-reverse"
+                ? "flex-row-reverse max-md:flex-col-reverse"
                 : "flex-row"
             }`}
           >
-            <div className="flex-1">
+            {/* Kontainer Gambar */}
+            <div className="flex-1 max-md:w-full">
               <Image
                 src={service.image}
                 width={500}
                 height={300}
                 alt={service.title}
-                className="rounded-lg shadow-lg"
+                className="rounded-lg shadow-lg w-full max-md:max-w-[90%] mx-auto"
               />
             </div>
-            <div className="flex-1">
+
+            {/* Kontainer Teks */}
+            <div className="flex-1 max-md:text-center max-md:w-full">
               <h2 className="text-3xl font-bold text-main">{service.title}</h2>
-              <p className="mt-4 text-lg ">{service.description}</p>
+              <p className="mt-4 text-lg">{service.description}</p>
               {service.id === 1 && (
                 <>
-                  <p className="mt-4 text-md font-semibold ">
+                  <p className="mt-4 text-md font-semibold">
                     📍 Lokasi: Jl. Kenumang No.18, Gianyar, Kec. Gianyar,
                     Kabupaten Gianyar, Bali 80511
                   </p>
                   <p className="mt-4 text-md font-semibold">
-                    🗺️ Google Maps :{" "}
-                    <span>
-                      <Link href={"https://maps.app.goo.gl/wqjzvAEpQW4Ci61M8"}>
-                        <Button
-                          variant={"link"}
-                          className="text-base text-foreground m-0 p-0 "
-                        >
-                          https://maps.app.goo.gl/wqjzvAEpQW4Ci61M8
-                        </Button>
-                      </Link>
-                    </span>
+                    🗺️ Google Maps:{" "}
+                    <Link href={"https://maps.app.goo.gl/wqjzvAEpQW4Ci61M8"}>
+                      <Button
+                        variant={"link"}
+                        className="text-base text-foreground m-0 p-0"
+                      >
+                        https://maps.app.goo.gl/wqjzvAEpQW4Ci61M8
+                      </Button>
+                    </Link>
                   </p>
                 </>
               )}

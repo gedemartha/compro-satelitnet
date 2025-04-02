@@ -47,6 +47,14 @@ export const NavbarCompro = () => {
                 href="/#"
                 className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
               >
+                Blog
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#"
+                className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
+              >
                 Produk
               </Link>
             </li>
