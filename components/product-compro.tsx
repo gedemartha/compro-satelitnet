@@ -1,70 +1,112 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-const products = [
-  {
-    id: 1,
-    name: "Produk 1",
-    description: "Deskripsi singkat produk 1.",
-    image: "/warnet-draft.jpg",
-    version: "v1.0",
-  },
-  {
-    id: 2,
-    name: "Produk 2",
-    description: "Deskripsi singkat produk 2.",
-    image: "/warnet-draft.jpg",
-    version: "v2.1",
-  },
-  {
-    id: 3,
-    name: "Produk 3",
-    description: "Deskripsi singkat produk 3.",
-    image: "/warnet-draft.jpg",
-    version: "v3.2",
-  },
-  {
-    id: 4,
-    name: "Produk 4",
-    description: "Deskripsi singkat produk 4.",
-    image: "/warnet-draft.jpg",
-    version: "v4.0",
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  image: string | null;
+  version: string;
+}
 
-const ProductCompro = () => {
+const ProductCompro = ({ products }: { products: Product[] }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = (product: Product) => {
+    setSelectedProduct(product);
+    setIsOpen(true);
+  };
+
   return (
     <section
       id="products"
-      className="py-20 bg-gradient-to-b from-toned to-purple-satelit"
+      className="py-24 bg-gradient-to-b from-toned to-purple-satelit"
     >
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-main text-5xl font-bold text-center mb-10">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-main text-5xl font-bold text-center mb-16">
           Produk Kami
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 ">
+        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-card rounded-lg shadow-md p-6 transform transition duration-300 hover:scale-105 hover:shadow-xl"
+              className="bg-card rounded-xl shadow-lg transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
             >
-              <div className="relative w-full h-40">
+              <div className="relative w-full h-56">
                 <Image
-                  src={product.image}
+                  src={product.image ?? "/placeholder.png"}
                   alt={product.name}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg"
+                  fill
+                  className="object-cover"
                 />
               </div>
-              <h3 className="text-xl font-semibold mt-4 text-main">
-                {product.name}
-              </h3>
-              <p className="text-sm  mt-2">{product.description}</p>
-              <p className="text-sm  mt-1">Versi: {product.version}</p>
+
+              <div className="p-6 flex flex-col justify-between flex-grow w-full ">
+                <div className="mb-4 w-full">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-2xl font-bold text-main max-w-[90%] break-words">
+                      {product.name}
+                    </h3>
+                    <span className="text-sm bg-primary  py-1 px-2 rounded-full ">
+                      {product.version}
+                    </span>
+                  </div>
+                  <p className=" text-base leading-relaxed line-clamp-3 min-h-[84px] break-words max-w-[90%] text-justify">
+                    {product.description}
+                  </p>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="text-sm w-fit"
+                  onClick={() => openModal(product)}
+                >
+                  Lihat Detail
+                </Button>
+              </div>
             </div>
           ))}
         </div>
+
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-2xl max-h-screen overflow-y-auto">
+            {selectedProduct && (
+              <>
+                <div className="relative w-full h-fit mb-4">
+                  <Image
+                    src={selectedProduct.image ?? "/placeholder.png"}
+                    alt={selectedProduct.name}
+                    width={300}
+                    height={200}
+                    className="rounded-lg object-cover mx-auto"
+                  />
+                </div>
+                <DialogHeader>
+                  <DialogTitle className="max-w-xl break-words">
+                    {selectedProduct.name}
+                  </DialogTitle>
+                </DialogHeader>
+                <p className="text-base leading-relaxed max-w-xl overflow-y-auto ">
+                  {selectedProduct.description}
+                </p>
+                <p className="text-sm  mt-4">
+                  Versi: {selectedProduct.version}
+                </p>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );

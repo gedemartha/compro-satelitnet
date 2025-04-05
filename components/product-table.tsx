@@ -85,10 +85,10 @@ export const NewProductTable = async () => {
                 {product.id}
               </span>
             </TableCell>
-            <TableCell className="font-medium text-center text-foreground">
+            <TableCell className="font-medium text-center text-foreground max-w-[100px] break-words">
               {product.name}
             </TableCell>
-            <TableCell className="text-justify">
+            <TableCell className="text-justify max-w-sm break-words">
               {product.description}
             </TableCell>
             <TableCell className="text-center">
@@ -104,7 +104,7 @@ export const NewProductTable = async () => {
                 <span className="text-gray-500">No Image</span>
               )}
             </TableCell>
-            <TableCell className="text-center text-foreground">
+            <TableCell className="text-center text-foreground max-w-[100px] break-words">
               {product.version}
             </TableCell>
             <TableCell>

@@ -90,6 +90,14 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
   const version = formData.get("version") as string;
   const image = formData.get("image") as File | null;
 
+  /* debug */
+  console.log("FormData received:", {
+    name,
+    description,
+    version,
+    image,
+  });
+
   let imagePath = "";
 
   // Jika ada file image, simpan ke public/uploads/
@@ -99,6 +107,8 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
       const buffer = Buffer.from(bytes);
       const filename = `product-${Date.now()}-${image.name}`;
       const filepath = join(process.cwd(), "public/uploads", filename);
+
+      console.log("Saving file to:", filepath); // debug
 
       await writeFile(filepath, buffer);
       imagePath = `/uploads/${filename}`;
@@ -117,6 +127,8 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
     version,
     image: imagePath, // Pastikan imagePath dikirim sebagai string
   });
+
+  console.log("Zod Validation:", validatedFields);
 
   if (!validatedFields.success) {
     return {
@@ -590,3 +602,11 @@ export const updateMeetingStatus = async (
     return false;
   }
 };
+
+export async function getComproProducts() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 6, // tampilkan maksimal 6 produk
+  });
+  return products;
+}
