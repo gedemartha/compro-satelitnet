@@ -14,7 +14,7 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { unlink, writeFile } from "fs/promises";
-import { join } from "path";
+import path, { join } from "path";
 
 //Register or Sign Up Action
 
@@ -500,66 +500,91 @@ export const createTestimonial = async (
   prevState: unknown,
   formData: FormData
 ) => {
-  const rawData = Object.fromEntries(formData.entries());
+  const name = formData.get("name") as string;
+  const content = formData.get("content") as string;
+  const rating = parseInt(formData.get("rating") as string);
+  const logo = formData.get("logo") as File | null;
 
-  // Buat objek baru dengan rating dikonversi ke number
-  const validatedFields = TestimonialSchema.safeParse({
-    ...rawData,
-    rating: Number(rawData.rating), // Konversi rating ke number
+  let logoPath = "";
+
+  if (logo) {
+    try {
+      const bytes = await logo.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `logo-${Date.now()}-${logo.name}`;
+      const filepath = join(process.cwd(), "public/uploads", filename);
+
+      await writeFile(filepath, buffer);
+      logoPath = `/uploads/${filename}`;
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to upload logo, error : ${error}`,
+      };
+    }
+  }
+
+  const validatedFields = await TestimonialSchema.safeParseAsync({
+    name,
+    content,
+    rating,
+    logo: logoPath,
   });
 
   if (!validatedFields.success) {
-    return {
-      error: validatedFields.error.flatten().fieldErrors,
-    };
+    return { error: validatedFields.error.flatten().fieldErrors };
   }
 
-  const { name, content, logo, rating } = validatedFields.data;
+  await prisma.testimonial.create({
+    data: {
+      name,
+      content,
+      rating,
+      logo: logoPath,
+    },
+  });
 
-  try {
-    await prisma.testimonial.create({
-      data: { name, content, logo, rating },
-    });
-    revalidatePath("/dashboard/posts");
-
-    return { success: true };
-  } catch (error) {
-    return { success: false, message: `Failed to create product: ${error}` };
-  }
+  revalidatePath("/dashboard/testimonials");
+  return { success: true };
 };
 
 export const updateTestimonial = async (
   prevState: unknown,
   formData: FormData
 ) => {
-  const validatedFields = TestimonialSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
-  console.log(validatedFields);
-
-  if (!validatedFields.success) {
-    return {
-      error: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const content = formData.get("content") as string;
-  const logo = formData.get("logo") as string;
   const rating = Number(formData.get("rating"));
+  const file = formData.get("logo") as File;
 
-  if (!id || !name || !content || !logo || isNaN(rating)) {
+  if (!id || !name || !content || isNaN(rating)) {
     return { error: "All fields are required" };
+  }
+
+  let logoPath: string | null = null;
+
+  if (file && typeof file === "object" && file.size > 0) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const filename = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+    const filePath = path.join(process.cwd(), "public", "uploads", filename);
+
+    await writeFile(filePath, buffer);
+    logoPath = `/uploads/${filename}`;
   }
 
   try {
     await prisma.testimonial.update({
       where: { id },
-      data: { name, content, logo, rating },
+      data: {
+        name,
+        content,
+        rating,
+        ...(logoPath && { logo: logoPath }),
+      },
     });
 
-    revalidatePath("/dashboard/testimonials"); // Refresh tabel testimonial tanpa reload halaman
+    revalidatePath("/dashboard/testimonials");
     return { success: true };
   } catch (error) {
     console.error("Update testimonial failed:", error);
@@ -609,4 +634,27 @@ export async function getComproProducts() {
     take: 6, // tampilkan maksimal 6 produk
   });
   return products;
+}
+
+export async function getComproTestimonials() {
+  const testimonials = await prisma.testimonial.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    select: {
+      id: true,
+      name: true,
+      content: true,
+      logo: true,
+      rating: true,
+    },
+  });
+
+  return testimonials.map((t) => ({
+    quote: t.content,
+    name: t.name,
+    logo: t.logo ?? "Logo",
+    rating: t.rating,
+  }));
 }

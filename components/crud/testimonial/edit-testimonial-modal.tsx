@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { updateTestimonial } from "@/lib/actions"; // Fungsi untuk update testimonial
-import { cn } from "@/lib/utils"; // Untuk className
+import { updateTestimonial } from "@/lib/actions";
+import { cn } from "@/lib/utils";
 import { FaStar } from "react-icons/fa";
 
 interface EditTestimonialModalProps {
@@ -41,34 +41,25 @@ export const EditTestimonialModal = ({
   const [formData, setFormData] = useState({
     name: testimonial.name,
     content: testimonial.content,
-    logo: testimonial.logo,
     rating: testimonial.rating,
   });
 
-  useEffect(() => {
-    console.log("Form State:", state);
-  }, [state]);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (state.success) {
       setTimeout(() => {
         setIsOpen(false);
-        setFormData({
-          name: testimonial.name,
-          content: testimonial.content,
-          logo: testimonial.logo,
-          rating: testimonial.rating,
-        }); // Reset input hanya saat sukses
         formRef.current?.reset();
       }, 2000);
     }
-  }, [state.success, testimonial]);
+  }, [state.success]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
       state.success = false;
-      state.error = "";
+      state.error = undefined;
     }
   };
 
@@ -76,42 +67,41 @@ export const EditTestimonialModal = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "rating" ? Math.max(1, Number(value) || 1) : value,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
+
+  const handleRatingClick = (selectedRating: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      rating: selectedRating,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
 
-    // Pastikan rating selalu berupa angka valid
-    const rating = Math.max(1, Number(formData.get("rating")) || 1);
-
-    // Buat FormData baru dan tambahkan data
     const updatedFormData = new FormData();
-    updatedFormData.append("id", formData.get("id") as string);
-    updatedFormData.append("name", formData.get("name") as string);
-    updatedFormData.append("content", formData.get("content") as string);
-    updatedFormData.append("logo", formData.get("logo") as string);
-    updatedFormData.append("rating", rating.toString()); // Ubah angka ke string
-
-    console.log(
-      "Submitting FormData:",
-      Object.fromEntries(updatedFormData.entries())
-    ); // Debugging
+    updatedFormData.append("id", testimonial.id);
+    updatedFormData.append("name", formData.name);
+    updatedFormData.append("content", formData.content);
+    updatedFormData.append("rating", String(formData.rating));
+    if (file) {
+      updatedFormData.append("logo", file);
+    }
 
     startTransition(() => {
-      formAction(updatedFormData); // ✅ FormData valid
+      formAction(updatedFormData);
     });
-  };
-  const handleRatingClick = (selectedRating: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      rating: selectedRating, // Paksa tetap sesuai klik user
-    }));
   };
 
   return (
@@ -119,18 +109,19 @@ export const EditTestimonialModal = ({
       <DialogTrigger asChild>
         <Button className={cn("p-6", className)}>Edit</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-screen sm:max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Testimonial</DialogTitle>
         </DialogHeader>
         <form
           ref={formRef}
-          action={formAction}
           onSubmit={handleSubmit}
           className="mt-4 flex flex-col gap-4"
         >
-          <input type="hidden" name="rating" value={formData.rating} />
+          {/* Hidden */}
           <input type="hidden" name="id" value={testimonial.id} />
+          <input type="hidden" name="rating" value={formData.rating} />
+
           <div>
             <label htmlFor="name" className="text-sm">
               Name
@@ -142,6 +133,7 @@ export const EditTestimonialModal = ({
               onChange={handleChange}
             />
           </div>
+
           <div>
             <label htmlFor="content" className="text-sm">
               Content
@@ -154,26 +146,26 @@ export const EditTestimonialModal = ({
               onChange={handleChange}
             />
           </div>
+
           <div>
             <label htmlFor="logo" className="text-sm">
-              Image Path
+              Upload New Image
             </label>
             <Input
               name="logo"
-              required
-              value={formData.logo ?? ""}
-              onChange={handleChange}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
             />
           </div>
+
           <div>
-            <label htmlFor="rating" className="text-sm">
-              Rating
-            </label>
-            <div className="flex space-x-2">
+            <label className="text-sm">Rating</label>
+            <div className="flex space-x-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <FaStar
                   key={star}
-                  className={`cursor-pointer ${
+                  className={`cursor-pointer text-xl ${
                     formData.rating >= star
                       ? "text-yellow-400"
                       : "text-gray-300"
@@ -183,11 +175,12 @@ export const EditTestimonialModal = ({
               ))}
             </div>
           </div>
+
           <Button type="submit">Update</Button>
+          {state.success && (
+            <p className="text-green-500">Testimonial updated successfully!</p>
+          )}
         </form>
-        {state.success && (
-          <p className="text-green-500">Testimonial updated successfully!</p>
-        )}
       </DialogContent>
     </Dialog>
   );

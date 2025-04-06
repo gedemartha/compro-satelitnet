@@ -14,7 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
 import { createTestimonial } from "@/lib/actions";
 import { cn } from "@/lib/utils";
-import { FaStar } from "react-icons/fa"; // Import icon bintang
+import { FaStar } from "react-icons/fa";
+import Image from "next/image";
 
 interface CreatePostModalProps {
   className?: string;
@@ -27,34 +28,31 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
     error: undefined,
   });
 
-  const [formData, setFormData] = useState({
-    name: "",
-    content: "",
-    logo: "",
-    rating: 0,
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  // Handle klik bintang untuk rating
-  const handleRating = (value: number) => {
-    setFormData((prev) => ({ ...prev, rating: value }));
-  };
-
   const formRef = useRef<HTMLFormElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (value: number) => {
+    setRating(value);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
   useEffect(() => {
     if (state.success) {
       setTimeout(() => {
         setIsOpen(false);
-        setFormData({ name: "", content: "", logo: "", rating: 0 });
+        setImagePreview(null);
+        setRating(0);
         formRef.current?.reset();
       }, 2000);
     }
@@ -73,7 +71,7 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
       <DialogTrigger asChild>
         <Button className={cn("mb-4", className)}>Add Testimonial</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-screen sm:max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a New Testimonial</DialogTitle>
         </DialogHeader>
@@ -85,15 +83,9 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
           {/* Name Input */}
           <div className="flex flex-col gap-1">
             <label htmlFor="name" className="text-sm">
-              Name
+              Company / Name
             </label>
-            <Input
-              name="name"
-              placeholder="e.g. John Doe"
-              required
-              onChange={handleChange}
-              value={formData.name}
-            />
+            <Input name="name" placeholder="e.g. John Doe" required />
             {state.error?.name && (
               <p className="text-red-500 text-sm">{state.error.name}</p>
             )}
@@ -102,39 +94,46 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
           {/* Content Input */}
           <div className="flex flex-col gap-1">
             <label htmlFor="content" className="text-sm">
-              Content
+              Testimony Content
             </label>
             <Textarea
               name="content"
               placeholder="Write your testimonial..."
               required
               className="h-44"
-              value={formData.content}
-              onChange={handleChange}
             />
             {state.error?.content && (
               <p className="text-red-500 text-sm">{state.error.content}</p>
             )}
           </div>
 
-          {/* Upload Image Input */}
+          {/* Logo Upload */}
           <div className="flex flex-col gap-1">
             <label htmlFor="logo" className="text-sm">
-              Upload Image
+              Upload Logo
             </label>
             <Input
+              type="file"
               name="logo"
-              placeholder="Image Path"
-              value={formData.logo}
+              accept="image/*"
               required
-              onChange={handleChange}
+              onChange={handleImageChange}
             />
+            {imagePreview && (
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                width={200}
+                height={200}
+                className="rounded-md object-contain mx-auto"
+              />
+            )}
             {state.error?.logo && (
               <p className="text-red-500 text-sm">{state.error.logo}</p>
             )}
           </div>
 
-          {/* Rating Input (Bintang) */}
+          {/* Rating */}
           <div className="flex flex-col gap-1">
             <label className="text-sm">Rating</label>
             <div className="flex gap-1">
@@ -143,16 +142,13 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
                   key={star}
                   size={24}
                   className={`cursor-pointer transition-colors ${
-                    formData.rating >= star
-                      ? "text-yellow-400"
-                      : "text-gray-300"
+                    rating >= star ? "text-yellow-400" : "text-gray-300"
                   }`}
                   onClick={() => handleRating(star)}
                 />
               ))}
             </div>
-            {/* Hidden input untuk mengirim rating */}
-            <input type="hidden" name="rating" value={formData.rating} />
+            <input type="hidden" name="rating" value={rating} />
             {state.error?.rating && (
               <p className="text-red-500 text-sm">{state.error.rating}</p>
             )}
@@ -160,8 +156,11 @@ export const CreateTestimonialModal = ({ className }: CreatePostModalProps) => {
 
           <Button type="submit">Create</Button>
         </form>
+
         {state.success && (
-          <p className="text-green-500">Testimonial added successfully!</p>
+          <p className="text-green-500 text-sm mt-2">
+            Testimonial added successfully!
+          </p>
         )}
       </DialogContent>
     </Dialog>

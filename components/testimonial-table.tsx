@@ -60,12 +60,17 @@ export const TestimonialTable = async () => {
               </span>
             </TableCell>
             <TableCell className="flex pt-3 justify-center">
-              <Image
-                src="/avatar.png"
-                alt={testimonial.name}
-                width={25}
-                height={10}
-              />
+              {testimonial.logo && testimonial.logo.startsWith("/") ? (
+                <Image
+                  src={testimonial.logo}
+                  alt={testimonial.name}
+                  width={100}
+                  height={100}
+                  className="rounded-md object-cover mx-auto"
+                />
+              ) : (
+                <span className="text-gray-500">No Image</span>
+              )}
             </TableCell>
             <TableCell className="font-medium text-center text-foreground">
               {testimonial.name}
