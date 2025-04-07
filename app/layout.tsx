@@ -27,7 +27,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main>{children}</main> {/* Jangan masukkan Navbar di dalam main */}
+          <main suppressHydrationWarning>{children}</main>{" "}
+          {/* Jangan masukkan Navbar di dalam main */}
         </ThemeProvider>
       </body>
     </html>
