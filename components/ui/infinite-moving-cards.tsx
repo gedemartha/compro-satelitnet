@@ -98,7 +98,7 @@ export const InfiniteMovingCards = ({
           // eslint-disable-next-line
           items.map((item, idx) => (
             <li
-              className="relative w-[350px] min-h-[250px] max-w-full shrink-0 rounded-2xl border  border-border dark:bg-card pb-16 px-8 py-6 md:w-[450px] "
+              className="relative w-[350px] min-h-[250px] max-w-full shrink-0 rounded-2xl border shadow-lg border-border dark:bg-card pb-16 px-8 py-6 md:w-[450px] "
               key={item.name}
             >
               <blockquote>
@@ -106,7 +106,7 @@ export const InfiniteMovingCards = ({
                   aria-hidden="true"
                   className="user-select-none pointer-events-none absolute -top-0.5 -left-0.5 -z-1 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
                 ></div>
-                <span className="relative z-20 pb-20 text-sm leading-[1.6] font-normal ">
+                <span className="relative z-20 pb-20 text-sm leading-[1.6] font-semibold ">
                   {item.quote}
                 </span>
                 <div className="absolute bottom-4 left-6 flex flex-row items-center gap-3 z-20">
@@ -120,11 +120,11 @@ export const InfiniteMovingCards = ({
                     />
                   )}
                   <span className="flex flex-col gap-1">
-                    <span className="text-sm leading-[1.6] font-normal text-neutral-500 dark:text-gray-400">
+                    <span className="text-sm leading-[1.6] font-normal ">
                       {item.name}
                     </span>
                     {item.title && (
-                      <span className="text-sm leading-[1.6] font-normal text-neutral-500 dark:text-gray-400">
+                      <span className="text-sm leading-[1.6] font-normal ">
                         {item.title}
                       </span>
                     )}

@@ -3,18 +3,19 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+//comment selama development
 // import { ContainerTextFlip } from "./ui/container-text-flip";
 
 const CTA = () => {
-  //   const words = [
-  //     "cepat",
-  //     "digital",
-  //     "efisien",
-  //     "modern",
-  //     "otomatis",
-  //     "scalable",
-  //     "kompetitif",
-  //   ];
+  // const words = [   //comment selama development
+  //   "cepat",
+  //   "digital",
+  //   "efisien",
+  //   "modern",
+  //   "otomatis",
+  //   "scalable",
+  //   "kompetitif",
+  // ];
 
   return (
     <section
@@ -28,7 +29,7 @@ const CTA = () => {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-b from-secondary to-transparent  z-10" />
 
       {/* BOTTOM GRADIENT FADE */}
-      <div className="absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-secondary to-transparent  z-10" />
+      <div className="absolute bottom-0 left-0 w-full h-5 bg-gradient-to-t from-secondary to-transparent  z-10" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex items-center justify-center">
         <div className="flex w-full gap-10 items-center">
@@ -36,7 +37,7 @@ const CTA = () => {
           <div className="flex w-[55%] ">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-left">
               Tingkatkan bisnis Anda menjadi lebih
-              {/* <span suppressHydrationWarning className="ml-2 inline-block">
+              {/* <span suppressHydrationWarning className="ml-2 inline-block">       // comment selama development
                 <ContainerTextFlip
                   words={words}
                   className="text-4xl md:text-5xl"

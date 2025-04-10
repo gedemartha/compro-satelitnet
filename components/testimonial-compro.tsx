@@ -33,8 +33,6 @@ const TestimonialCompro = () => {
           speed="normal"
         />
       </div>
-      {/* BOTTOM FADE TO TRANSPARENT */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-secondary to-transparent pointer-events-none" />
     </section>
   );
 };
