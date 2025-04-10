@@ -1,7 +1,6 @@
 import AboutUs from "@/components/about-us";
 import Advantages from "@/components/advantages";
 import CTA from "@/components/cta";
-import Footer from "@/components/footer";
 import { Hero } from "@/components/hero";
 import ProductCompro from "@/components/product-compro";
 import Services from "@/components/services";
@@ -21,7 +20,6 @@ const ComproPage = async () => {
       <ProductCompro products={products} />
       <TestimonialCompro />
       <CTA />
-      <Footer />
     </div>
   );
 };

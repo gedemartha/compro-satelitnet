@@ -5,7 +5,7 @@ import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-background pt-12 pb-7 px-6 rounded">
+    <footer className="bg-background pt-12 pb-7 px-6 rounded mt-50">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-around items-start gap-8 ">
         <div className="flex flex-col space-y-4">
           <h3 className="text-2xl font-semibold">SatelitNET Komputer</h3>

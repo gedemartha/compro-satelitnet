@@ -32,11 +32,13 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  authorId  String
-  image     String?
+  id       String  @id @default(cuid())
+  title    String
+  content  String
+  authorId String
+  image    String?
+  slug     String  @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)

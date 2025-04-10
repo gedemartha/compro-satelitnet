@@ -43,6 +43,7 @@ export const PostSchema = object({
   content: string().min(1, "Username must be more than 1 character"),
   authorId: string().min(1, "Name must be more than 1 character"),
   image: string().optional(),
+  slug: string().optional(),
 });
 
 export const TestimonialSchema = object({

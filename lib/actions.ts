@@ -14,6 +14,7 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { unlink, writeFile } from "fs/promises";
+import { slugify } from "@/lib/slugify";
 import path, { join } from "path";
 
 //Register or Sign Up Action
@@ -383,12 +384,15 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
     }
   }
 
+  const slug = slugify(title);
+
   // Validasi data menggunakan Zod
   const validatedFields = await PostSchema.safeParseAsync({
     title,
     content,
     authorId,
     image: imagePath, // Pastikan imagePath dikirim sebagai string
+    slug,
   });
 
   if (!validatedFields.success) {
@@ -405,6 +409,7 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
         content,
         authorId,
         image: imagePath,
+        slug,
       },
     });
 
@@ -423,6 +428,8 @@ export const updatePost = async (prevState: unknown, formData: FormData) => {
   const image = formData.get("image") as File | null;
 
   let imagePath = "";
+
+  const slug = slugify(title);
 
   if (image) {
     try {
@@ -445,6 +452,7 @@ export const updatePost = async (prevState: unknown, formData: FormData) => {
         title,
         content,
         image: imagePath || undefined, // Jika tidak ada gambar baru, pakai yang lama
+        slug,
       },
     });
 
@@ -634,6 +642,21 @@ export async function getComproProducts() {
     take: 6, // tampilkan maksimal 6 produk
   });
   return products;
+}
+
+export async function getAllPosts() {
+  const posts = await prisma.post.findMany({});
+  return posts;
+}
+export async function getSlugPost(slug: string) {
+  const post = await prisma.post.findUnique({
+    where: { slug },
+    include: {
+      author: true, // pastikan relasi ini ada di schema prisma kamu
+    },
+  });
+
+  return post;
 }
 
 export async function getComproTestimonials() {

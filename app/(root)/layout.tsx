@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import { NavbarCompro } from "@/components/navbar-compro";
 import ThemeButton from "@/components/theme-button";
 import * as React from "react";
@@ -10,6 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <ThemeButton />
       </div>
       <main className="z-0">{children}</main>
+      <Footer />
     </div>
   );
 };
