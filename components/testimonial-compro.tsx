@@ -22,7 +22,10 @@ const TestimonialCompro = () => {
   }, []);
 
   return (
-    <section className="w-full h-screen bg-gradient-to-b from-purple-satelit to-secondary ">
+    <section
+      className="w-full h-screen bg-gradient-to-b from-purple-satelit to-secondary "
+      id="testimonial"
+    >
       <div className="max-w-6xl mx-auto px-4 ">
         <h2 className="text-main text-5xl font-bold text-center mb-16 py-1">
           Testimoni Pelanggan

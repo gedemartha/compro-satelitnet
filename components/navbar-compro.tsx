@@ -52,7 +52,7 @@ export const NavbarCompro = () => {
             </li>
             <li>
               <Link
-                href="/#"
+                href="/product"
                 className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
               >
                 Produk
@@ -60,7 +60,7 @@ export const NavbarCompro = () => {
             </li>
             <li>
               <Link
-                href="/#"
+                href="/#testimonial"
                 className="cursor-pointer text-base text-foreground p-0 font-semibold hover:underline"
               >
                 Testimoni
