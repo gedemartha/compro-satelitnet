@@ -27,7 +27,7 @@ const TestimonialCompro = () => {
       id="testimonial"
     >
       <div className="max-w-6xl mx-auto px-4 ">
-        <h2 className="text-main text-5xl font-bold text-center mb-16 py-1">
+        <h2 className="text-main text-5xl font-bold text-center mb-16 py-1 ">
           Testimoni Pelanggan
         </h2>
         <InfiniteMovingCards

@@ -1,5 +1,7 @@
 "use server";
 import {
+  FeedbackSchema,
+  MeetingSchema,
   PostSchema,
   ProductSchema,
   RegisterSchema,
@@ -681,3 +683,92 @@ export async function getComproTestimonials() {
     rating: t.rating,
   }));
 }
+
+export const createFeedback = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const content = formData.get("content") as string;
+  const rating = parseInt(formData.get("rating") as string);
+
+  const validatedFields = await FeedbackSchema.safeParseAsync({
+    name,
+    email,
+    content,
+    rating,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  await prisma.feedback.create({
+    data: {
+      name,
+      email,
+      content,
+      rating,
+    },
+  });
+
+  revalidatePath("/dashboard/feedback");
+  return { success: true };
+};
+
+export const createMeeting = async (
+  prevState: {
+    error?: {
+      name?: string[];
+      email?: string[];
+      notes?: string[];
+      date?: string[];
+    };
+    success?: boolean;
+  },
+  formData: FormData
+) => {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const notes = formData.get("notes") as string;
+  const date = formData.get("date") as string;
+
+  const validated = await MeetingSchema.safeParseAsync({
+    name,
+    email,
+    notes,
+    date,
+  });
+
+  if (!validated.success) {
+    return {
+      error: validated.error.flatten().fieldErrors,
+    };
+  }
+
+  const {
+    name: validName,
+    email: validEmail,
+    notes: validNotes,
+    date: validDate,
+  } = validated.data;
+
+  await prisma.meeting.create({
+    data: {
+      name: validName,
+      email: validEmail,
+      notes: validNotes,
+      date: validDate,
+      status: "pending", // default status
+    },
+  });
+
+  revalidatePath("/meeting"); // kalau kamu punya list meeting nanti
+
+  return {
+    success: true,
+  };
+};

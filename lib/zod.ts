@@ -55,3 +55,23 @@ export const TestimonialSchema = object({
     z.number().min(1).max(5, "Rating must be between 1 and 5")
   ),
 });
+
+export const FeedbackSchema = object({
+  name: z.string().min(1, "Nama tidak boleh kosong"),
+  email: z.string().email("Format email tidak valid"),
+  content: z.string().min(1, "Isi feedback harus diisi"),
+  rating: z.preprocess(
+    (val) => (val === "" ? 0 : Number(val)),
+    z.number().min(1, "Rating harus diisi").max(5)
+  ),
+});
+
+export const MeetingSchema = z.object({
+  name: z.string().min(1, "Nama tidak boleh kosong"),
+  email: z.string().email("Email tidak valid"),
+  notes: z.string().min(1, "Catatan tidak boleh kosong"),
+  date: z.preprocess(
+    (val) => (val instanceof Date ? val : new Date(val as string)),
+    z.date({ required_error: "Tanggal harus dipilih" })
+  ),
+});

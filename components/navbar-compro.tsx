@@ -67,7 +67,7 @@ export const NavbarCompro = () => {
               </Link>
             </li>
 
-            <Link href="#">
+            <Link href="/feedback">
               <li>
                 <Button
                   variant="outline"
@@ -77,7 +77,7 @@ export const NavbarCompro = () => {
                 </Button>
               </li>
             </Link>
-            <Link href="#">
+            <Link href="/meeting">
               <Button
                 variant="outline"
                 className=" p-2 bg-primary hover:bg-purple-950 hover:underline"

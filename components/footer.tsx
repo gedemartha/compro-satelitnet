@@ -19,15 +19,18 @@ const Footer = () => {
           <h4 className="text-xl font-semibold mb-2">Hubungi Kami</h4>
           <div className="flex items-center gap-3 text-sm ">
             <FaPhoneAlt className="text-primary" />
-            <span>+62 812-3456-7890</span>
+            <span>+62 878-6019-2369</span>
           </div>
           <div className="flex items-center gap-3 text-sm ">
             <FaEnvelope className="text-primary" />
-            <span>info@satelitnet.com</span>
+            <span>satelit.internet@gmail.com</span>
           </div>
           <div className="flex items-center gap-3 text-sm ">
             <FaMapMarkerAlt className="text-primary" />
-            <span>Jl. Teknologi No.123, Jakarta</span>
+            <span className="max-w-sm">
+              Jl. Kenumang No.18, Gianyar, Kec. Gianyar, Kabupaten Gianyar, Bali
+              80511
+            </span>
           </div>
         </div>
       </div>

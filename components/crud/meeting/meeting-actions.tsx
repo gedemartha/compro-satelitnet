@@ -19,6 +19,9 @@ const MeetingActions: React.FC<MeetingActionsProps> = ({
   const [status, setStatus] = useState(initialStatus); // Simpan status di state
 
   const handleStatusChange = (newStatus: "Approved" | "Rejected") => {
+    if (newStatus == status) {
+      return;
+    }
     setLoading(true);
     startTransition(async () => {
       try {

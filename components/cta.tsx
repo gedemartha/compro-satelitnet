@@ -58,10 +58,7 @@ const CTA = () => {
               variant="outline"
               className="p-2 bg-primary hover:bg-purple-950 hover:underline hover:text-white w-max h-max"
             >
-              <Link
-                href="/meeting-request"
-                className="text-xl hover:text-white"
-              >
+              <Link href="/meeting" className="text-xl hover:text-white">
                 Jadwalkan Meeting
               </Link>
             </Button>
