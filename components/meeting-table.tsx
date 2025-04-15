@@ -87,6 +87,8 @@ export const MeetingTable = async () => {
               <MeetingActions
                 meetingId={meeting.id}
                 initialStatus={meeting.status}
+                email={meeting.email}
+                name={meeting.name}
               />
             </TableCell>
           </TableRow>

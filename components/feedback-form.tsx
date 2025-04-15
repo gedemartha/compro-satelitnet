@@ -2,9 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useFormState } from "react-dom";
 import { createFeedback } from "@/lib/actions";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import {
   Dialog,
@@ -25,7 +24,7 @@ const initialState: {
 } = {};
 
 export default function FeedbackForm() {
-  const [state, formAction] = useFormState(createFeedback, initialState);
+  const [state, formAction] = useActionState(createFeedback, initialState);
   const [open, setOpen] = useState(false);
 
   // Controlled inputs state

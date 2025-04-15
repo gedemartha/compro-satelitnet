@@ -18,6 +18,7 @@ import { revalidatePath } from "next/cache";
 import { unlink, writeFile } from "fs/promises";
 import { slugify } from "@/lib/slugify";
 import path, { join } from "path";
+import { sendMail } from "./mailer";
 
 //Register or Sign Up Action
 
@@ -713,6 +714,13 @@ export const createFeedback = async (
       content,
       rating,
     },
+  });
+  sendMail({
+    to: email,
+    subject: "Terima Kasih atas Feedback Anda!",
+    html: `<p>Halo ${name},</p><p>Terima kasih telah memberikan feedback kepada SatelitNET. Kami sangat menghargainya!</p>`,
+  }).catch((err) => {
+    console.error("Gagal kirim email feedback:", err);
   });
 
   revalidatePath("/dashboard/feedback");
