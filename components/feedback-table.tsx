@@ -41,7 +41,7 @@ export const FeedbackTable = async () => {
           <TableHead className="w-[100px] px-10 text-center font-bold text-foreground">
             Rating
           </TableHead>
-          <TableHead className="w-[150px] px-0 text-center font-bold text-foreground kasi-border-merah">
+          <TableHead className="w-[150px] px-0 text-center font-bold text-foreground ">
             Created At
           </TableHead>
         </TableRow>
