@@ -717,8 +717,30 @@ export const createFeedback = async (
   });
   sendMail({
     to: email,
-    subject: "Terima Kasih atas Feedback Anda!",
-    html: `<p>Halo ${name},</p><p>Terima kasih telah memberikan feedback kepada SatelitNET. Kami sangat menghargainya!</p>`,
+    subject: "Terima Kasih atas Feedback Anda terhadap SatelitNET Komputer!",
+    html: `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e0e0e0; border-radius: 8px;">
+    <h2 style="color: #1e40af;">Terima Kasih, ${name}!</h2>
+
+    <p>
+      Kami sangat menghargai feedback yang telah Anda berikan kepada <strong>SatelitNET Komputer</strong>.
+      Masukan Anda membantu kami untuk terus meningkatkan kualitas layanan.
+    </p>
+
+    <p style="margin-top: 16px;">
+      Jika Anda memiliki saran atau pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami kembali kapan saja.
+    </p>
+
+    <hr style="margin: 32px 0;" />
+
+    <footer style="font-size: 14px; color: #6b7280;">
+      <p><strong>SatelitNET Komputer</strong></p>
+      <p>Jl. Kenumang No.18, Gianyar, Kec. Gianyar Kabupaten Gianyar, Bali 80511</p>
+      <p>Email: satelit.internet@gmail.com | WhatsApp: +62 878-6019-2369</p>
+      <p style="margin-top: 16px;">&copy; ${new Date().getFullYear()} SatelitNET Komputer. All rights reserved.</p>
+    </footer>
+  </div>
+`,
   }).catch((err) => {
     console.error("Gagal kirim email feedback:", err);
   });
@@ -774,6 +796,36 @@ export const createMeeting = async (
     },
   });
 
+  sendMail({
+    to: email,
+    subject:
+      "Terima Kasih telah mengisi penjadwalan Meeting anda bersama SatelitNET Komputer!",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e0e0e0; border-radius: 8px;">
+        <h2 style="color: #1e40af;">Terima Kasih, ${name}!</h2>
+    
+        <p>
+          Kami telah menerima permintaan meeting Anda bersama <strong>SatelitNET Komputer</strong>.
+          Tim kami akan segera menghubungi Anda untuk mengonfirmasi waktu dan detail meeting.
+        </p>
+    
+        <p style="margin-top: 16px;">
+          Mohon ditunggu informasi selanjutnya melalui pesan email. Kami akan segera memberikan update terkait jadwal yang tersedia.
+        </p>
+    
+        <hr style="margin: 32px 0;" />
+    
+        <footer style="font-size: 14px; color: #6b7280;">
+          <p><strong>SatelitNET Komputer</strong></p>
+          <p>Jl. Kenumang No.18, Gianyar, Kec. Gianyar Kabupaten Gianyar, Bali 80511</p>
+          <p>Email: satelit.internet@gmail.com | WhatsApp: +62 878-6019-2369</p>
+          <p style="margin-top: 16px;">&copy; ${new Date().getFullYear()} SatelitNET Komputer. All rights reserved.</p>
+        </footer>
+      </div>
+    `,
+  }).catch((err) => {
+    console.error("Gagal kirim email feedback:", err);
+  });
   revalidatePath("/meeting"); // kalau kamu punya list meeting nanti
 
   return {

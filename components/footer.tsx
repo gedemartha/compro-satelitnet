@@ -1,7 +1,9 @@
 // components/Footer.tsx
 
+import Link from "next/link";
 import React from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { Button } from "./ui/button";
 
 const Footer = () => {
   return (
@@ -23,7 +25,11 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-3 text-sm ">
             <FaEnvelope className="text-primary" />
-            <span>satelit.internet@gmail.com</span>
+            <Link href="mailto:satelit.internet@gmail.com">
+              <Button variant="link" className="p-0 m-0 text-foreground">
+                satelit.internet@gmail.com
+              </Button>
+            </Link>
           </div>
           <div className="flex items-center gap-3 text-sm ">
             <FaMapMarkerAlt className="text-primary" />

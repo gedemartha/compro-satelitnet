@@ -38,7 +38,7 @@ export async function sendMail({
   });
 
   const mailOptions = {
-    from: `SatelitNET <${process.env.EMAIL_USER}>`,
+    from: `SatelitNET Komputer <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,

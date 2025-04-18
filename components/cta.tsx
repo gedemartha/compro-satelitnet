@@ -3,20 +3,8 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-//comment selama development
-// import { ContainerTextFlip } from "./ui/container-text-flip";
 
 const CTA = () => {
-  // const words = [   //comment selama development
-  //   "cepat",
-  //   "digital",
-  //   "efisien",
-  //   "modern",
-  //   "otomatis",
-  //   "scalable",
-  //   "kompetitif",
-  // ];
-
   return (
     <section
       className="relative w-full bg-cover bg-center bg-no-repeat text-white h-[90vh] "
@@ -36,13 +24,8 @@ const CTA = () => {
           {/* Kiri */}
           <div className="flex w-[55%] ">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-left">
-              Tingkatkan bisnis Anda menjadi lebih
-              {/* <span suppressHydrationWarning className="ml-2 inline-block">       // comment selama development
-                <ContainerTextFlip
-                  words={words}
-                  className="text-4xl md:text-5xl"
-                />
-              </span> */}
+              Tingkatkan bisnis Anda menjadi lebih{" "}
+              <span className="text-main">modern</span>
               <span className="inline-block mt-3">bersama kami.</span>
             </h1>
           </div>
