@@ -12,9 +12,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { createProduct } from "@/lib/actions";
-import { cn } from "@/lib/utils"; // Import fungsi cn dari utils.ts
+import { createProduct, getCategories } from "@/lib/actions";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CreateProductModalProps {
   className?: string;
@@ -30,6 +40,14 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [categories, setCategories] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  useEffect(() => {
+    getCategories().then((data) => setCategories(data));
+  }, []);
 
   useEffect(() => {
     if (state.success) {
@@ -38,23 +56,24 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
         formRef.current?.reset();
         setImagePreview(null);
         setSelectedFile(null);
+        setSelectedCategory("");
       }, 2000);
     }
   }, [state.success]);
-
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (open) {
-      state.success = false;
-      state.error = {};
-    }
-  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      state.success = false;
+      state.error = {};
     }
   };
 
@@ -73,6 +92,7 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
             if (selectedFile) {
               formData.append("image", selectedFile);
             }
+            formData.append("categoryId", selectedCategory);
             formAction(formData);
           }}
           className="mt-4 flex flex-col gap-4"
@@ -86,6 +106,30 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
               <p className="text-red-500 text-sm">{state.error.name}</p>
             )}
           </div>
+
+          {/* Select Category */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Category</label>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Available Categories</SelectLabel>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="description" className="text-sm">
               Description
@@ -99,6 +143,7 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
               <p className="text-red-500 text-sm">{state.error.description}</p>
             )}
           </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="version" className="text-sm">
               Version
@@ -108,6 +153,7 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
               <p className="text-red-500 text-sm">{state.error.version}</p>
             )}
           </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="image" className="text-sm">
               Upload Image
@@ -131,6 +177,7 @@ export const CreateProductModal = ({ className }: CreateProductModalProps) => {
               <p className="text-red-500 text-sm">{state.error.image}</p>
             )}
           </div>
+
           <Button type="submit">Create</Button>
         </form>
         {state.success && (

@@ -39,12 +39,14 @@ export const signUpCredentials = async (
   const hashedPassword = hashSync(password, 10);
 
   try {
+    const userCount = await prisma.user.count(); // Jangan lupa pakai await
+    const role = userCount === 0 ? "admin" : "user"; // Cek apakah ini user pertama
     await prisma.user.create({
       data: {
         name,
         username,
         email,
-        role: "user",
+        role,
         password: hashedPassword,
       },
     });
@@ -88,23 +90,22 @@ export const signInCredentials = async (
 //  Product Actions
 
 export const createProduct = async (prevState: unknown, formData: FormData) => {
-  // Ambil data dari formData
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
   const version = formData.get("version") as string;
   const image = formData.get("image") as File | null;
+  const categoryId = formData.get("categoryId") as string;
 
-  /* debug */
   console.log("FormData received:", {
     name,
     description,
     version,
+    categoryId,
     image,
   });
 
   let imagePath = "";
 
-  // Jika ada file image, simpan ke public/uploads/
   if (image) {
     try {
       const bytes = await image.arrayBuffer();
@@ -112,24 +113,24 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
       const filename = `product-${Date.now()}-${image.name}`;
       const filepath = join(process.cwd(), "public/uploads", filename);
 
-      console.log("Saving file to:", filepath); // debug
+      console.log("Saving file to:", filepath);
 
       await writeFile(filepath, buffer);
       imagePath = `/uploads/${filename}`;
     } catch (error) {
       return {
         success: false,
-        message: `Failed to upload image, Error:${error}`,
+        message: `Failed to upload image, Error: ${error}`,
       };
     }
   }
 
-  // Validasi data menggunakan Zod
   const validatedFields = await ProductSchema.safeParseAsync({
     name,
     description,
     version,
-    image: imagePath, // Pastikan imagePath dikirim sebagai string
+    image: imagePath,
+    categoryId,
   });
 
   console.log("Zod Validation:", validatedFields);
@@ -141,13 +142,13 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
   }
 
   try {
-    // Simpan ke database
     await prisma.product.create({
       data: {
         name,
         description,
         version,
         image: imagePath,
+        categoryId,
       },
     });
 
@@ -155,7 +156,10 @@ export const createProduct = async (prevState: unknown, formData: FormData) => {
 
     return { success: true };
   } catch (error) {
-    return { success: false, message: `Failed to create product: ${error}` };
+    return {
+      success: false,
+      message: `Failed to create product: ${error}`,
+    };
   }
 };
 
@@ -287,12 +291,15 @@ export const createUser = async (prevState: unknown, formData: FormData) => {
   const hashedPassword = hashSync(password, 10);
 
   try {
+    const userCount = await prisma.user.count(); // Jangan lupa pakai await
+
+    const role = userCount === 0 ? "admin" : "user"; // Cek apakah ini user pertama
     await prisma.user.create({
       data: {
         name,
         username,
         email,
-        role: "user",
+        role,
         password: hashedPassword,
       },
     });
@@ -413,6 +420,7 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
         authorId,
         image: imagePath,
         slug,
+        categoryId: "none",
       },
     });
 
@@ -831,4 +839,28 @@ export const createMeeting = async (
   return {
     success: true,
   };
+};
+
+export async function createCategory(data: { name: string }) {
+  return await prisma.category.create({
+    data: {
+      name: data.name,
+    },
+  });
+}
+
+export const getCategories = async () => {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+    });
+
+    return categories.map((cat) => ({
+      label: cat.name,
+      value: cat.id,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    return [];
+  }
 };

@@ -39,9 +39,18 @@ model Post {
   image    String?
   slug     String  @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+  posts    Post[]
 }
 
 model Testimonial {
@@ -72,6 +81,9 @@ model Product {
   version     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 }
 
 model Meeting {

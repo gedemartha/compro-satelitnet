@@ -23,7 +23,9 @@ export const getProducts = async () => {
 
   if (role === "admin") {
     try {
-      const products = await prisma.product.findMany();
+      const products = await prisma.product.findMany({
+        include: { category: true },
+      });
       return products;
     } catch (error) {
       console.log(error);

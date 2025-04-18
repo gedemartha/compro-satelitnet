@@ -65,6 +65,9 @@ export const NewProductTable = async () => {
           <TableHead className="w-[250px] font-bold text-foreground">
             Description
           </TableHead>
+          <TableHead className="w-[250px] font-bold text-foreground">
+            category
+          </TableHead>
           <TableHead className="w-[200px] text-center font-bold text-foreground">
             Image
           </TableHead>
@@ -90,6 +93,9 @@ export const NewProductTable = async () => {
             </TableCell>
             <TableCell className="text-justify max-w-sm break-words">
               {product.description}
+            </TableCell>
+            <TableCell className="text-justify max-w-sm break-words">
+              {product.category.name}
             </TableCell>
             <TableCell className="text-center">
               {product.image && product.image.startsWith("/") ? (
