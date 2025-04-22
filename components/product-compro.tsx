@@ -62,7 +62,7 @@ const ProductCompro = ({ products }: { products: Product[] }) => {
                     <h3 className="text-2xl font-bold text-main max-w-[90%] break-words">
                       {product.name}
                     </h3>
-                    <span className="text-sm bg-primary  py-1 px-2 rounded-full ">
+                    <span className="text-sm bg-primary  py-1 px-2 rounded-full text-white">
                       {product.version}
                     </span>
                   </div>

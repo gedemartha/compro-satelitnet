@@ -9,7 +9,7 @@ export const NavbarCMS = async () => {
   return (
     <nav className="border-b-2 border-border bg-background  sticky top-0 z-10 shadow-md">
       <div className="max-wscreen-xl flex items-center justify-between mx-auto p-4">
-        <Link href="/dashboard">
+        <Link href="/">
           <Image
             src="/logo-satelitnet-transparent.png"
             alt="Logo"

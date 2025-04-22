@@ -6,7 +6,7 @@ export const NavbarCompro = () => {
     <nav className="w-full border-b-[1px] border-border bg-background sticky top-0 z-50 shadow-md">
       <div className="flex items-center justify-between mx-auto px-4 py-2">
         <div>
-          <Link href="/dashboard">
+          <Link href="/">
             <Image
               src="/logo-satelitnet-transparent.png"
               alt="Logo"
