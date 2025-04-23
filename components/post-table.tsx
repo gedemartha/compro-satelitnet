@@ -33,6 +33,9 @@ export const PostTable = async () => {
               Title
             </TableHead>
             <TableHead className="w-60 font-bold text-foreground">
+              Category
+            </TableHead>
+            <TableHead className="w-60 font-bold text-foreground">
               Content
             </TableHead>
             <TableHead className="w-40 text-center font-bold text-foreground">
@@ -52,11 +55,16 @@ export const PostTable = async () => {
               <TableCell className="text-center text-foreground">
                 {index + 1}
               </TableCell>
-              <TableCell className="text-center font-medium text-foreground">
+              <TableCell className="text-center font-medium text-foreground max-w-sm break-words">
                 {post.title}
               </TableCell>
-              <TableCell className="text-justify">{post.content}</TableCell>
-              <TableCell className="flex justify-center">
+              <TableCell className="text-justify max-w-sm break-words">
+                {post.category.name}
+              </TableCell>
+              <TableCell className="text-justify max-w-sm break-words">
+                {post.content}
+              </TableCell>
+              <TableCell className="flex justify-center max-w-sm break-words">
                 {post.image && post.image.startsWith("/") ? (
                   <Image
                     src={post.image}

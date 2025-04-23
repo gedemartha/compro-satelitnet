@@ -373,7 +373,15 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
   const content = formData.get("content") as string;
   const authorId = formData.get("authorId") as string;
   const image = formData.get("image") as File | null;
+  const categoryId = formData.get("categoryId") as string;
 
+  console.log("FormData received:", {
+    title,
+    content,
+    authorId,
+    categoryId,
+    image,
+  });
   let imagePath = "";
 
   // Jika ada file image, simpan ke public/uploads/
@@ -403,6 +411,7 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
     authorId,
     image: imagePath, // Pastikan imagePath dikirim sebagai string
     slug,
+    categoryId,
   });
 
   if (!validatedFields.success) {
@@ -420,7 +429,7 @@ export const createPost = async (prevState: unknown, formData: FormData) => {
         authorId,
         image: imagePath,
         slug,
-        categoryId: "none",
+        categoryId,
       },
     });
 

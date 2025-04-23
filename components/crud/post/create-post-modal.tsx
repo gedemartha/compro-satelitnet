@@ -12,9 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { createPost } from "@/lib/actions";
+import { createPost, getCategories } from "@/lib/actions";
 import { cn } from "@/lib/utils"; // Import fungsi cn dari utils.ts
 import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CreatePostModalProps {
   className?: string;
@@ -39,6 +48,14 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [categories, setCategories] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  useEffect(() => {
+    getCategories().then((data) => setCategories(data));
+  }, []);
 
   useEffect(() => {
     if (state.success) {
@@ -47,6 +64,7 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
         formRef.current?.reset();
         setImagePreview(null);
         setSelectedFile(null);
+        setSelectedCategory("");
       }, 2000);
     }
   }, [state.success]);
@@ -72,7 +90,7 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
       <DialogTrigger asChild>
         <Button className={cn("mb-4", className)}>Create Post</Button>
       </DialogTrigger>
-      <DialogContent className="max-h-screen overflow-y-auto">
+      <DialogContent className="max-h-screen overflow-y-auto max-w-3xl">
         <DialogHeader>
           <DialogTitle>Create a New Post</DialogTitle>
         </DialogHeader>
@@ -82,6 +100,7 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
             if (selectedFile) {
               formData.append("image", selectedFile);
             }
+            formData.append("categoryId", selectedCategory);
             formAction(formData);
           }}
           className="mt-4 flex flex-col gap-4"
@@ -95,6 +114,29 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
               <p className="text-red-500 text-sm">{state.error.title}</p>
             )}
           </div>
+          {/* Select Category */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Category</label>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Available Categories</SelectLabel>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex flex-col gap-1">
             <label htmlFor="content" className="text-sm">
               Content
@@ -102,6 +144,7 @@ export const CreatePostModal = ({ className }: CreatePostModalProps) => {
             <Textarea
               name="content"
               placeholder="Write something..."
+              className="h-40"
               required
             />
             {state.error?.content && (

@@ -42,7 +42,10 @@ export const getPosts = async () => {
   if (role === "admin") {
     try {
       const posts = await prisma.post.findMany({
-        include: { author: { select: { id: true, name: true } } },
+        include: {
+          author: { select: { id: true, name: true } },
+          category: { select: { id: true, name: true } },
+        },
       });
 
       return posts;
