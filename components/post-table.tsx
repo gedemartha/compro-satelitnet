@@ -55,7 +55,7 @@ export const PostTable = async () => {
               <TableCell className="text-center text-foreground">
                 {index + 1}
               </TableCell>
-              <TableCell className="text-center font-medium text-foreground max-w-sm break-words">
+              <TableCell className="text-left font-medium text-foreground max-w-sm break-words">
                 {post.title}
               </TableCell>
               <TableCell className="text-justify max-w-sm break-words">

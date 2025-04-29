@@ -873,3 +873,27 @@ export const getCategories = async () => {
     return [];
   }
 };
+
+export async function getDashboardCounts() {
+  const [
+    postCount,
+    productCount,
+    testimonialCount,
+    meetingCount,
+    feedbackCount,
+  ] = await Promise.all([
+    prisma.post.count(),
+    prisma.product.count(),
+    prisma.testimonial.count(),
+    prisma.meeting.count(),
+    prisma.feedback.count(),
+  ]);
+
+  return {
+    postCount,
+    productCount,
+    testimonialCount,
+    meetingCount,
+    feedbackCount,
+  };
+}

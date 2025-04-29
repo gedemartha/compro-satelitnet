@@ -21,8 +21,8 @@ export function Hero() {
         <p className="mt-4 text-base md:text-lg max-w-3xl font-semibold text-foreground text-center">
           Solusi IT terintegrasi untuk bisnis masa kini.{" "}
           <br className="hidden md:block" />
-          Bantu transformasi digital bisnis Anda menjadi lebih mudah, cepat, dan
-          efisien.
+          Digitalisasi bisnis Anda menjadi lebih mudah, cepat, dan efisien
+          bersama kami.
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
