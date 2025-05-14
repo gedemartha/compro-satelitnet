@@ -39,7 +39,7 @@ const Advantages = () => {
       id="advantages"
       className="w-full py-20 bg-gradient-to-b from-secondary to-toned  flex flex-col items-center"
     >
-      <h2 className="text-main text-5xl font-bold mb-12 pb-1">
+      <h2 className="text-main text-4xl font-bold mb-12 pb-1 ">
         Keunggulan Kami
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl items-center ">

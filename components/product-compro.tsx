@@ -37,7 +37,7 @@ const ProductCompro = ({ products }: { products: Product[] }) => {
       className="py-24 bg-gradient-to-b from-toned to-purple-satelit"
     >
       <div className="max-w-6xl mx-auto px-4 ">
-        <h2 className="text-main text-5xl font-bold text-center mb-16">
+        <h2 className="text-main text-4xl font-bold text-center mb-16">
           Produk Kami
         </h2>
 

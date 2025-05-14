@@ -22,27 +22,27 @@ const DashboardPage = async () => {
   const cards = counts
     ? [
         {
-          title: "Posts",
+          title: "Jumlah Blog",
           count: counts.postCount,
           icon: <FaBlog size={30} className="text-blue-500" />,
         },
         {
-          title: "Products",
+          title: "Jumlah Produk",
           count: counts.productCount,
           icon: <FaBoxOpen size={30} className="text-green-500" />,
         },
         {
-          title: "Testimonials",
+          title: "Jumlah Testimoni",
           count: counts.testimonialCount,
           icon: <FaComments size={30} className="text-yellow-500" />,
         },
         {
-          title: "Meeting Requests",
+          title: "Jumlah Permintaan Meeting",
           count: counts.meetingCount,
           icon: <FaCalendarAlt size={30} className="text-purple-500" />,
         },
         {
-          title: "Feedback",
+          title: "Jumlah Ulasan",
           count: counts.feedbackCount,
           icon: <FaEnvelope size={30} className="text-red-500" />,
         },
@@ -53,7 +53,7 @@ const DashboardPage = async () => {
     <div className="min-h-screen max-w-screen-xl mx-auto py-6 px-4">
       <h1 className="text-2xl font-bold">Dashboard</h1>
       <h2 className="text-xl mb-6">
-        Welcome Back,{" "}
+        Selamat datang,{" "}
         <span className="font-semibold">{session?.user?.name}</span>
       </h2>
 

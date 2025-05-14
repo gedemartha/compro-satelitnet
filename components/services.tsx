@@ -28,8 +28,8 @@ const Services = () => {
       id="services"
       className="w-full py-24 bg-gradient-to-b from-accent to-secondary"
     >
-      <div className="max-w-5xl mx-auto space-y-16 px-6">
-        <h1 className="text-main text-5xl font-bold text-center pb-1">
+      <div className="max-w-5xl mx-auto space-y-16 px-6 max-md:mt-40">
+        <h1 className="text-main text-5xl font-bold text-center pb-1 max-md:text-4xl">
           Layanan Kami
         </h1>
 

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 export const NavbarCompro = () => {
   return (
-    <nav className="w-full border-b-[1px] border-border bg-background sticky top-0 z-50 shadow-md">
-      <div className="flex items-center justify-between mx-auto px-4 py-2">
+    <nav className="w-full border-b-[1px] border-border bg-background sticky top-0 z-50 shadow-md ">
+      <div className="flex items-center justify-between mx-auto px-4 py-2 ">
         <div>
           <Link href="/">
             <Image
@@ -16,7 +16,7 @@ export const NavbarCompro = () => {
             />
           </Link>
         </div>
-        <div className="flex gap-5">
+        <div className="max-md:hidden flex gap-5">
           <ul className="flex items-center gap-4">
             <li>
               <Link

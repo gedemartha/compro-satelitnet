@@ -32,32 +32,32 @@ export const NavbarCMS = async () => {
                   <>
                     <Link href="/dashboard/users">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Users</li>
+                        <li className="text-base">Pengguna</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/products">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Products</li>
+                        <li className="text-base">Produk</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/posts">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Posts</li>
+                        <li className="text-base">Blog</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/meetings">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Meetings</li>
+                        <li className="text-base">Meeting</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/feedbacks">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Feedbacks</li>
+                        <li className="text-base">Ulasan</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/testimonials">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Testimonials</li>
+                        <li className="text-base">Testimoni</li>
                       </Button>
                     </Link>
                   </>
@@ -100,7 +100,7 @@ export const NavbarCMS = async () => {
                 type="submit"
                 className="bg-destructive text-white px-4 py-2 rounded-md hover:bg-red-500 "
               >
-                Sign Out
+                Keluar
               </button>
             </form>
           ) : (
