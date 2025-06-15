@@ -37,7 +37,7 @@ export function Hero() {
               variant="outline"
               className="px-6 py-3 rounded-lg text-base font-medium transition-all duration-300 border-border text-primary bg-white dark:text-foreground hover:bg-primary hover:text-white dark:bg-purple-satelit"
             >
-              Jadwalkan Meeting
+              Hubungi Kami
             </Button>
           </Link>
         </div>

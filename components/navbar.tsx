@@ -47,7 +47,7 @@ export const NavbarCMS = async () => {
                     </Link>
                     <Link href="/dashboard/meetings">
                       <Button variant={"link"} className="text-foreground p-0">
-                        <li className="text-base">Meeting</li>
+                        <li className="text-base">Diskusi</li>
                       </Button>
                     </Link>
                     <Link href="/dashboard/feedbacks">

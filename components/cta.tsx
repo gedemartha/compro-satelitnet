@@ -33,8 +33,8 @@ const CTA = () => {
           {/* Kanan */}
           <div className="flex-1 flex flex-col items-start max-md:items-center max-md:w-full">
             <p className="text-xl mb-8 text-justify max-md:text-center max-md:text-base">
-              Jadwalkan pertemuan dengan kami dan mulai transformasi digital
-              bisnis Anda hari ini.
+              Kami siap membantu Anda mewujudkan solusi digital yang tepat.
+              Hubungi kami untuk informasi lebih lanjut!
             </p>
 
             <Button
@@ -45,7 +45,7 @@ const CTA = () => {
                 href="/meeting"
                 className="text-xl hover:text-white max-md:text-base"
               >
-                Jadwalkan Meeting
+                Hubungi Kami
               </Link>
             </Button>
           </div>

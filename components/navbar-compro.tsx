@@ -82,7 +82,7 @@ export const NavbarCompro = () => {
                 variant="outline"
                 className=" p-2 bg-primary hover:bg-purple-950 hover:underline"
               >
-                <li className="text-base text-white  ">Jadwalkan Meeting</li>
+                <li className="text-base text-white  ">Hubungi Kami</li>
               </Button>
             </Link>
           </ul>

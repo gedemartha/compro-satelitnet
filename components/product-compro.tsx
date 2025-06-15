@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Product {
   id: string;
@@ -104,9 +105,18 @@ const ProductCompro = ({ products }: { products: Product[] }) => {
                 <p className="text-base leading-relaxed max-w-xl overflow-y-auto ">
                   {selectedProduct.description}
                 </p>
-                <p className="text-sm  mt-4">
-                  Versi: {selectedProduct.version}
-                </p>
+                <p className="text-sm mt-4">Versi: {selectedProduct.version}</p>
+                <div className="flex flex-col mt-6 gap-2">
+                  <p>Tertarik dengan produk ini?</p>
+                  <Link href="/meeting">
+                    <Button
+                      variant="outline"
+                      className=" p-2 bg-primary hover:bg-purple-950 hover:underline"
+                    >
+                      Tanyakan Produk
+                    </Button>
+                  </Link>
+                </div>
               </>
             )}
           </DialogContent>

@@ -8,12 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 type Product = {
   id: string;
   name: string;
   image?: string | null;
+  version: string;
   description: string;
 };
 
@@ -46,7 +49,19 @@ export default function ProductModal({
           />
         )}
 
-        <p className="mb-2">{product.description}</p>
+        <p className="text-sm text-gray-400">Versi: {product.version}</p>
+        <p>{product.description}</p>
+        <div className="flex flex-col mt-6 gap-2">
+          <p>Tertarik dengan produk ini?</p>
+          <Link href="/meeting">
+            <Button
+              variant="outline"
+              className=" p-2 bg-primary hover:bg-purple-950 hover:underline"
+            >
+              Tanyakan Produk
+            </Button>
+          </Link>
+        </div>
       </DialogContent>
     </Dialog>
   );

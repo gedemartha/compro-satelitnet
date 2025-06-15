@@ -21,7 +21,7 @@ interface EditUserModalProps {
     name?: string | null;
     email?: string | null;
     username?: string | null;
-    roles?: string[];
+    role?: string;
     password: string;
   };
   className?: string;
@@ -29,7 +29,7 @@ interface EditUserModalProps {
 
 export const EditUserModal = ({ user, className }: EditUserModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(user.roles?.[0] || "user"); // Hanya satu role
+  const [selectedRole, setSelectedRole] = useState("user"); // Hanya satu role
   const [state, formAction] = useActionState(updateUser, {
     success: false,
     error: undefined,
@@ -44,6 +44,12 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
       }, 2000);
     }
   }, [state.success]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedRole(user.role || "user");
+    }
+  }, [isOpen, user.role]);
 
   const handleRoleChange = (role: string) => {
     setSelectedRole((prev) => (prev === role ? "" : role)); // Uncheck jika sudah dipilih
@@ -102,7 +108,7 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
             />
           </div>
           <div>
-            <label className="text-sm">Roles</label>
+            <label className="text-sm">role</label>
             <div className="flex flex-row items-center gap-5">
               <label className="flex items-center gap-2">
                 <Checkbox

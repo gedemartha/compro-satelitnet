@@ -105,7 +105,7 @@ export default function MeetingForm() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium">Tanggal Meeting</label>
+        <label className="text-sm font-medium">Tanggal Pertemuan</label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -138,7 +138,7 @@ export default function MeetingForm() {
         />
       </div>
 
-      <Button type="submit">Kirim Jadwal Meeting</Button>
+      <Button type="submit">Kirim Pesan</Button>
 
       {state.success && (
         <Dialog open={open} onOpenChange={setOpen}>
