@@ -114,7 +114,7 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
                 <Checkbox
                   checked={selectedRole === "admin"}
                   onCheckedChange={() => handleRoleChange("admin")}
-                  disabled={selectedRole === "user"}
+                  // disabled={selectedRole === "user"}
                 />
                 <span>Admin</span>
               </label>
@@ -122,7 +122,7 @@ export const EditUserModal = ({ user, className }: EditUserModalProps) => {
                 <Checkbox
                   checked={selectedRole === "user"}
                   onCheckedChange={() => handleRoleChange("user")}
-                  disabled={selectedRole === "admin"}
+                  // disabled={selectedRole === "admin"}
                 />
                 <span>User</span>
               </label>
